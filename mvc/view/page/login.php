@@ -1,3 +1,50 @@
+<?php
+// Kết nối đến cơ sở dữ liệu
+$servername = "localhost";
+$username = "root";  // Tên đăng nhập của database
+$password = "";  // Mật khẩu của database (nếu có)
+$dbname = "WebThiTracNghiem";  // Tên database của bạn
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Kiểm tra kết nối
+if ($conn->connect_error) {
+    die("Kết nối thất bại: " . $conn->connect_error);
+}
+
+// Xử lý khi form được submit
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST['username']; // Tên đăng nhập (mã sinh viên)
+    $password = $_POST['password']; // Mật khẩu
+
+    // Kiểm tra thông tin đăng nhập
+    $sql = "SELECT * FROM nguoidung WHERE id = ?"; // Tìm kiếm người dùng dựa trên mã sinh viên
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        // Kiểm tra mật khẩu
+        if (password_verify($password, $row['matkhau'])) {
+            // Đăng nhập thành công
+            session_start(); // Khởi động session
+            $_SESSION['user_id'] = $row['id']; // Lưu thông tin người dùng vào session
+            header("Location: dashboard.php"); // Chuyển hướng đến trang chính
+            exit();
+        } else {
+            echo "<script>alert('Mật khẩu không chính xác!');</script>";
+        }
+    } else {
+        echo "<script>alert('Tên đăng nhập không tồn tại!');</script>";
+    }
+}
+
+$conn->close();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -123,9 +170,12 @@
             <div class="login-form">
                 <h1>HUFLIT <span>Test</span></h1>
                 <p>Đăng nhập</p>
-                <input type="text" class="form-control" placeholder="Tên đăng nhập">
-                <input type="password" class="form-control" placeholder="Mật khẩu">
-                <button class="btn btn-custom">Đăng nhập</button>
+                <form method="POST" action="login.php">
+                    <input type="text" class="form-control" name="username" placeholder="Tên đăng nhập" required>
+                    <input type="password" class="form-control" name="password" placeholder="Mật khẩu" required>
+                    <button class="btn btn-custom" type="submit">Đăng nhập</button>
+                </form>
+
                 <button class="btn btn-light btn-custom google-login">
                     <img src="/mvc/view/img/logo_gg.png" width="20px" alt="Google logo">
                     Đăng nhập với Google
