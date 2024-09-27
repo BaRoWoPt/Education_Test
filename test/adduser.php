@@ -1,11 +1,10 @@
 <?php
-// Thông tin kết nối
+// Kết nối đến cơ sở dữ liệu
 $servername = "localhost";
-$username = "root"; // Thay thế bằng tên người dùng của bạn
-$password = ""; // Thay thế bằng mật khẩu của bạn
-$dbname = "WebThiTracNghiem"; // Tên cơ sở dữ liệu của bạn
+$username = "root";  // Tên đăng nhập của database
+$password = "";  // Mật khẩu của database (nếu có)
+$dbname = "WebThiTracNghiem";  // Tên database của bạn
 
-// Tạo kết nối
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Kiểm tra kết nối
@@ -13,24 +12,23 @@ if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
 
-// Thông tin người dùng cần thêm
-$email = "example@example.com"; // Thay thế bằng email bạn muốn thêm
-$id = "user123"; // ID người dùng
-$hoten = "Nguyễn Văn A"; // Họ tên người dùng
-$gioitinh = 1; // Giới tính (1: Nam, 0: Nữ)
-$ngaysinh = "1990-01-01"; // Ngày sinh
-$matkhau = password_hash("password123", PASSWORD_DEFAULT); // Mật khẩu đã mã hóa
+// Mã hóa mật khẩu
+$plain_password = '290504'; // Mật khẩu gốc
+$hashed_password = password_hash($plain_password, PASSWORD_DEFAULT); // Mã hóa mật khẩu
 
-// Câu lệnh SQL để chèn người dùng mới
-$sql = "INSERT INTO nguoidung (email, id, hoten, gioitinh, ngaysinh, matkhau, trangthai) 
-        VALUES ('$email', '$id', '$hoten', $gioitinh, '$ngaysinh', '$matkhau', 1)";
+// Thêm người dùng
+$sql = "INSERT INTO nguoidung (email, id, hoten, gioitinh, ngaysinh, matkhau, trangthai, manhomquyen) 
+        VALUES ('newuser@example.com', 'newuser123', 'Nguyễn Văn A', 1, '2000-01-01', ?, 1, 1)";
 
-// Thực thi câu lệnh SQL
-if ($conn->query($sql) === TRUE) {
-    echo "Người dùng mới đã được thêm thành công!";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $hashed_password);
+$stmt->execute();
+
+if ($stmt->affected_rows > 0) {
+    echo "Thêm người dùng thành công.";
 } else {
-    echo "Lỗi: " . $sql . "<br>" . $conn->error;
+    echo "Có lỗi xảy ra khi thêm người dùng: " . $conn->error;
 }
 
-// Đóng kết nối
+$stmt->close();
 $conn->close();

@@ -1,9 +1,9 @@
 <?php
 // Kết nối đến cơ sở dữ liệu
 $servername = "localhost";
-$username = "root";  // Tên đăng nhập của database
-$password = "";  // Mật khẩu của database (nếu có)
-$dbname = "WebThiTracNghiem";  // Tên database của bạn
+$username = "root";
+$password = "";
+$dbname = "WebThiTracNghiem";
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -17,60 +17,41 @@ if ($conn->connect_error) {
 // Xử lý khi form được submit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hoten = $_POST['hoten'];
-    $id = $_POST['id'];  // Mã sinh viên
+    $id = $_POST['id']; // Mã sinh viên
     $email = $_POST['email'];
     $matkhau = $_POST['matkhau'];
     $xacnhanmatkhau = $_POST['xacnhanmatkhau'];
 
     // Kiểm tra xác nhận mật khẩu
     if ($matkhau !== $xacnhanmatkhau) {
-        echo "<script>alert('Mật khẩu xác nhận không khớp!');</script>";
+        echo "Mật khẩu xác nhận không khớp!";
     } else {
         // Mã hóa mật khẩu
         $matkhau_mahoa = password_hash($matkhau, PASSWORD_BCRYPT);
 
-        // Kiểm tra xem email và id đã tồn tại chưa
-        $checkEmail = "SELECT * FROM nguoidung WHERE email=?";
-        $checkId = "SELECT * FROM nguoidung WHERE id=?";
+        // Kiểm tra xem email đã tồn tại chưa
+        $checkEmail = "SELECT * FROM nguoidung WHERE email='$email'";
+        $result = $conn->query($checkEmail);
 
-        $stmtEmail = $conn->prepare($checkEmail);
-        $stmtEmail->bind_param("s", $email);
-        $stmtEmail->execute();
-        $resultEmail = $stmtEmail->get_result();
-
-        $stmtId = $conn->prepare($checkId);
-        $stmtId->bind_param("s", $id);
-        $stmtId->execute();
-        $resultId = $stmtId->get_result();
-
-        if ($resultEmail->num_rows > 0) {
-            echo "<script>alert('Email đã được sử dụng.');</script>";
-        } elseif ($resultId->num_rows > 0) {
-            echo "<script>alert('Mã sinh viên đã tồn tại.');</script>";
+        if ($result->num_rows > 0) {
         } else {
-            // Thêm người dùng mới vào cơ sở dữ liệu
-            $sql = "INSERT INTO nguoidung (id, hoten, email, matkhau, trangthai) VALUES (?, ?, ?, ?, ?)";
-            $trangthai = 1; // Trạng thái mặc định
+            // Thêm người dùng mới vào cơ sở dữ liệu với manhomquyen = 11 (Sinh viên)
+            $sql = "INSERT INTO nguoidung (hoten, id, email, matkhau, trangthai, manhomquyen) 
+                    VALUES ('$hoten', '$id', '$email', '$matkhau_mahoa', 1, 11)"; // Gán mã nhóm quyền là 11 (Sinh viên)
 
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssssi", $id, $hoten, $email, $matkhau_mahoa, $trangthai);
-
-            if ($stmt->execute() === TRUE) {
-                echo "<script>alert('Đăng ký thành công!'); window.location.href='login.php';</script>";
+            if ($conn->query($sql) === TRUE) {
+                // Chuyển hướng đến trang đăng nhập
+                header("Location: login.php");
+                exit();
             } else {
-                echo "<script>alert('Lỗi: " . $stmt->error . "');</script>";
+                echo "Lỗi: " . $sql . "<br>" . $conn->error;
             }
         }
-
-        $stmtEmail->close();
-        $stmtId->close();
     }
 }
 
 $conn->close();
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -81,134 +62,134 @@ $conn->close();
     <title>HUFLIT Test - Register</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #f0f4f8;
-            /* Màu nền tổng thể */
-            font-family: 'Inter', sans-serif;
-        }
+    body {
+        background-color: #f0f4f8;
+        /* Màu nền tổng thể */
+        font-family: 'Inter', sans-serif;
+    }
 
-        .register-container {
-            display: flex;
-            height: 100vh;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+    .register-container {
+        display: flex;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
 
+    .register-box {
+        display: flex;
+        flex-direction: row;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #fff;
+        /* Màu nền cho box */
+    }
+
+    .register-form {
+        padding: 40px;
+        background-color: #ffffff;
+    }
+
+    .register-form h1 {
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #FFD700;
+        /* Màu tiêu đề */
+    }
+
+    .register-form h1 span {
+        color: #FFD700;
+        /* Màu vàng cho chữ "Test" */
+    }
+
+    .register-form p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        color: #333;
+    }
+
+    .register-image {
+        background-color: #a12c2f;
+        /* Màu nền cho phần thông báo */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+        color: white;
+        flex: 1;
+        text-align: center;
+    }
+
+    .register-image h1 {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .register-image p {
+        font-size: 1rem;
+    }
+
+    .form-control {
+        margin-bottom: 20px;
+        height: 45px;
+        /* border: 1px solid #007bff; */
+        /* Viền input màu xanh */
+        border-radius: 5px;
+    }
+
+    .btn-custom {
+        width: 100%;
+        height: 45px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        background-color: #a12c2f;
+        /* Màu nền nút đăng ký */
+        /* border-color: #007bff; */
+    }
+
+    .google-register {
+        background-color: #f8f9fa;
+        /* Màu nền nút Google */
+        color: #333;
+        /* border: 1px solid #007bff; */
+        /* Viền đồng bộ */
+    }
+
+    .google-register img {
+        margin-right: 10px;
+    }
+
+    .text-small {
+        font-size: 0.9rem;
+        color: #FFD700;
+        /* Màu liên kết */
+    }
+
+    .text-primary {
+        color: #a12c2f !important;
+    }
+
+    @media (max-width: 768px) {
         .register-box {
-            display: flex;
-            flex-direction: row;
-            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-            background-color: #fff;
-            /* Màu nền cho box */
-        }
-
-        .register-form {
-            padding: 40px;
-            background-color: #ffffff;
-        }
-
-        .register-form h1 {
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #FFD700;
-            /* Màu tiêu đề */
-        }
-
-        .register-form h1 span {
-            color: #FFD700;
-            /* Màu vàng cho chữ "Test" */
-        }
-
-        .register-form p {
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            color: #333;
+            flex-direction: column;
+            /* Chuyển đổi layout trên màn hình nhỏ */
+            box-shadow: none;
+            /* Bỏ bóng đổ trên màn hình nhỏ */
         }
 
         .register-image {
-            background-color: #a12c2f;
-            /* Màu nền cho phần thông báo */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-            color: white;
-            flex: 1;
-            text-align: center;
+            padding: 20px;
+            font-size: 1.5rem;
         }
 
-        .register-image h1 {
-            font-size: 2rem;
-            font-weight: bold;
+        .register-form {
+            padding: 20px;
         }
-
-        .register-image p {
-            font-size: 1rem;
-        }
-
-        .form-control {
-            margin-bottom: 20px;
-            height: 45px;
-            /* border: 1px solid #007bff; */
-            /* Viền input màu xanh */
-            border-radius: 5px;
-        }
-
-        .btn-custom {
-            width: 100%;
-            height: 45px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-
-        .btn-primary {
-            background-color: #a12c2f;
-            /* Màu nền nút đăng ký */
-            /* border-color: #007bff; */
-        }
-
-        .google-register {
-            background-color: #f8f9fa;
-            /* Màu nền nút Google */
-            color: #333;
-            /* border: 1px solid #007bff; */
-            /* Viền đồng bộ */
-        }
-
-        .google-register img {
-            margin-right: 10px;
-        }
-
-        .text-small {
-            font-size: 0.9rem;
-            color: #FFD700;
-            /* Màu liên kết */
-        }
-
-        .text-primary {
-            color: #a12c2f !important;
-        }
-
-        @media (max-width: 768px) {
-            .register-box {
-                flex-direction: column;
-                /* Chuyển đổi layout trên màn hình nhỏ */
-                box-shadow: none;
-                /* Bỏ bóng đổ trên màn hình nhỏ */
-            }
-
-            .register-image {
-                padding: 20px;
-                font-size: 1.5rem;
-            }
-
-            .register-form {
-                padding: 20px;
-            }
-        }
+    }
     </style>
 </head>
 

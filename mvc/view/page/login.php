@@ -33,7 +33,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Đăng nhập thành công
             session_start(); // Khởi động session
             $_SESSION['user_id'] = $row['id']; // Lưu thông tin người dùng vào session
-            header("Location: dashboard.php"); // Chuyển hướng đến trang chính
+            $_SESSION['manhomquyen'] = $row['manhomquyen']; // Lưu nhóm quyền vào session
+
+            // Chuyển hướng dựa trên manhomquyen
+            if ($_SESSION['manhomquyen'] == 1) {
+                header("Location: admin.php"); // Chuyển đến trang admin
+            } elseif ($_SESSION['manhomquyen'] == 10) {
+                header("Location: dashboard.php"); // Chuyển đến trang giảng viên
+            } elseif ($_SESSION['manhomquyen'] == 11) {
+                header("Location: student_dashboard.php"); // Chuyển đến trang sinh viên
+            }
             exit();
         } else {
             echo "<script>alert('Mật khẩu không chính xác!');</script>";
