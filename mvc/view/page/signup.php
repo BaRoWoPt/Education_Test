@@ -14,6 +14,9 @@ if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
 
+// Khởi tạo biến thông báo
+$thongbao = '';
+
 // Xử lý khi form được submit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hoten = $_POST['hoten'];
@@ -24,16 +27,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Kiểm tra xác nhận mật khẩu
     if ($matkhau !== $xacnhanmatkhau) {
-        echo "Mật khẩu xác nhận không khớp!";
+        $thongbao = "Mật khẩu xác nhận không khớp!";
     } else {
         // Mã hóa mật khẩu
         $matkhau_mahoa = password_hash($matkhau, PASSWORD_BCRYPT);
 
         // Kiểm tra xem email đã tồn tại chưa
         $checkEmail = "SELECT * FROM nguoidung WHERE email='$email'";
-        $result = $conn->query($checkEmail);
+        $resultEmail = $conn->query($checkEmail);
 
-        if ($result->num_rows > 0) {
+        // Kiểm tra xem mã sinh viên đã tồn tại chưa
+        $checkId = "SELECT * FROM nguoidung WHERE id='$id'";
+        $resultId = $conn->query($checkId);
+
+        if ($resultEmail->num_rows > 0) {
+            $thongbao = "Email đã tồn tại! Vui lòng sử dụng email khác.";
+        } elseif ($resultId->num_rows > 0) {
+            $thongbao = "Mã sinh viên đã tồn tại! Vui lòng sử dụng mã khác.";
         } else {
             // Thêm người dùng mới vào cơ sở dữ liệu với manhomquyen = 11 (Sinh viên)
             $sql = "INSERT INTO nguoidung (hoten, id, email, matkhau, trangthai, manhomquyen) 
@@ -44,12 +54,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: login.php");
                 exit();
             } else {
-                echo "Lỗi: " . $sql . "<br>" . $conn->error;
+                $thongbao = "Lỗi: " . $sql . "<br>" . $conn->error;
             }
         }
     }
 }
 
+// Đóng kết nối
 $conn->close();
 ?>
 
@@ -59,12 +70,12 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/mvc//view/img/68e129217733aa0645b48e7c154d2303-_1_.svg" type="image/x-icon">
     <title>HUFLIT Test - Register</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
     body {
         background-color: #f0f4f8;
-        /* Màu nền tổng thể */
         font-family: 'Inter', sans-serif;
     }
 
@@ -76,6 +87,14 @@ $conn->close();
         padding: 20px;
     }
 
+    .text-small {
+        color: #FFD700;
+    }
+
+    .text-primary {
+        color: #a12c2f !important;
+    }
+
     .register-box {
         display: flex;
         flex-direction: row;
@@ -83,7 +102,6 @@ $conn->close();
         border-radius: 10px;
         overflow: hidden;
         background-color: #fff;
-        /* Màu nền cho box */
     }
 
     .register-form {
@@ -95,12 +113,6 @@ $conn->close();
         font-weight: bold;
         margin-bottom: 20px;
         color: #FFD700;
-        /* Màu tiêu đề */
-    }
-
-    .register-form h1 span {
-        color: #FFD700;
-        /* Màu vàng cho chữ "Test" */
     }
 
     .register-form p {
@@ -111,7 +123,6 @@ $conn->close();
 
     .register-image {
         background-color: #a12c2f;
-        /* Màu nền cho phần thông báo */
         display: flex;
         justify-content: center;
         align-items: center;
@@ -121,20 +132,9 @@ $conn->close();
         text-align: center;
     }
 
-    .register-image h1 {
-        font-size: 2rem;
-        font-weight: bold;
-    }
-
-    .register-image p {
-        font-size: 1rem;
-    }
-
     .form-control {
         margin-bottom: 20px;
         height: 45px;
-        /* border: 1px solid #007bff; */
-        /* Viền input màu xanh */
         border-radius: 5px;
     }
 
@@ -147,38 +147,18 @@ $conn->close();
 
     .btn-primary {
         background-color: #a12c2f;
-        /* Màu nền nút đăng ký */
-        /* border-color: #007bff; */
+        border-color: #a12c2f;
     }
 
-    .google-register {
-        background-color: #f8f9fa;
-        /* Màu nền nút Google */
-        color: #333;
-        /* border: 1px solid #007bff; */
-        /* Viền đồng bộ */
-    }
-
-    .google-register img {
-        margin-right: 10px;
-    }
-
-    .text-small {
-        font-size: 0.9rem;
-        color: #FFD700;
-        /* Màu liên kết */
-    }
-
-    .text-primary {
-        color: #a12c2f !important;
+    .btn-primary:hover {
+        background-color: #e57373;
+        border-color: #e57373;
     }
 
     @media (max-width: 768px) {
         .register-box {
             flex-direction: column;
-            /* Chuyển đổi layout trên màn hình nhỏ */
             box-shadow: none;
-            /* Bỏ bóng đổ trên màn hình nhỏ */
         }
 
         .register-image {
@@ -196,13 +176,18 @@ $conn->close();
 <body>
     <div class="register-container">
         <div class="register-box">
-            <!-- Left Section (Form) -->
             <div class="register-form">
                 <h1>HUFLIT <span class="text-primary">Test</span></h1>
                 <p>Đăng ký tài khoản để tham gia kỳ thi</p>
 
-                <!-- Form đăng ký gửi POST -->
-                <form method="POST" action="signup.php">
+                <!-- Thông báo lỗi -->
+                <?php if (!empty($thongbao)): ?>
+                <div class="alert alert-danger" role="alert" id="error-message">
+                    <?php echo $thongbao; ?>
+                </div>
+                <?php endif; ?>
+
+                <form method="POST" action="signup.php" id="register-form">
                     <input type="text" class="form-control" name="hoten" placeholder="Họ và tên" required>
                     <input type="text" class="form-control" name="id" placeholder="Mã sinh viên/Giảng viên" required>
                     <input type="email" class="form-control" name="email" placeholder="Email" required>
@@ -211,17 +196,11 @@ $conn->close();
                         required>
                     <button class="btn btn-primary btn-custom" type="submit">Đăng ký</button>
                 </form>
-
-                <button class="btn btn-light btn-custom google-register">
-                    <img src="/mvc/view/img/logo_gg.png" width="30px" alt="">
-                    Đăng ký với Google
-                </button>
                 <div class="d-flex justify-content-between">
                     <a href="/mvc/view/page/login.php" class="text-small">Đã có tài khoản? Đăng nhập</a>
                 </div>
             </div>
 
-            <!-- Right Section (Welcome Message) -->
             <div class="register-image">
                 <div>
                     <h1>Welcome to the HUFLIT Test</h1>
@@ -232,6 +211,15 @@ $conn->close();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Lắng nghe sự kiện input trên form để ẩn thông báo lỗi
+    document.getElementById('register-form').addEventListener('input', function() {
+        var errorMessage = document.getElementById('error-message');
+        if (errorMessage) {
+            errorMessage.style.display = 'none'; // Ẩn thông báo lỗi
+        }
+    });
+    </script>
 </body>
 
 </html>

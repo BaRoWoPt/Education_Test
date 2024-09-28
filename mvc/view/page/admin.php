@@ -1,6 +1,9 @@
 <?php
 session_start(); // Khởi động session
 
+// Khởi tạo biến để lưu thông báo lỗi
+$error_message = '';
+
 // Kiểm tra xem người dùng đã đăng nhập chưa
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -44,10 +47,27 @@ if (isset($_GET['delete_id'])) {
     $result = $stmt->get_result();
 
     if ($result->num_rows == 0) {
+        // Xóa người dùng không phải là admin
         $sql = "DELETE FROM nguoidung WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $delete_id);
         $stmt->execute();
+    } else {
+        // Kiểm tra xem còn bao nhiêu admin
+        $countAdmins = "SELECT COUNT(*) AS total_admins FROM nguoidung WHERE manhomquyen = 1";
+        $countResult = $conn->query($countAdmins);
+        $totalAdmins = $countResult->fetch_assoc()['total_admins'];
+
+        if ($totalAdmins > 1) {
+            // Xóa admin nếu còn nhiều hơn 1 admin
+            $sql = "DELETE FROM nguoidung WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("s", $delete_id);
+            $stmt->execute();
+        } else {
+            // Lưu thông báo lỗi
+            $error_message = "Không thể xóa admin duy nhất.";
+        }
     }
 }
 
@@ -60,8 +80,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_user'])) {
     $new_ngaysinh = $_POST['new_ngaysinh'];
     $new_manhomquyen = $_POST['new_manhomquyen'];
 
-    // Kiểm tra xem người dùng có phải là admin không
-    if ($new_manhomquyen != 1 || $_SESSION['user_id'] != $update_id) {
+    // Kiểm tra nếu người dùng đang cập nhật nhóm quyền
+    if ($new_manhomquyen != 1) {
+        // Kiểm tra xem người dùng có phải là admin duy nhất không
+        $checkAdmin = "SELECT COUNT(*) AS total_admins FROM nguoidung WHERE manhomquyen = 1";
+        $result = $conn->query($checkAdmin);
+        $totalAdmins = $result->fetch_assoc()['total_admins'];
+
+        if ($totalAdmins > 1 || ($_SESSION['user_id'] != $update_id)) {
+            // Cho phép cập nhật nếu không phải là admin duy nhất hoặc đang cập nhật tài khoản khác
+            $sql = "UPDATE nguoidung SET email = ?, hoten = ?, gioitinh = ?, ngaysinh = ?, manhomquyen = ? WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssisss", $new_email, $new_hoten, $new_gioitinh, $new_ngaysinh, $new_manhomquyen, $update_id);
+            $stmt->execute();
+        } else {
+            // Lưu thông báo lỗi
+            $error_message = "Không thể thay đổi quyền admin duy nhất.";
+        }
+    } else {
+        // Xử lý cập nhật bình thường nếu không thay đổi quyền
         $sql = "UPDATE nguoidung SET email = ?, hoten = ?, gioitinh = ?, ngaysinh = ?, manhomquyen = ? WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssisss", $new_email, $new_hoten, $new_gioitinh, $new_ngaysinh, $new_manhomquyen, $update_id);
@@ -95,6 +132,7 @@ $summary = $summary_result->fetch_assoc();
 $total_teachers = $summary['total_teachers'];
 $total_students = $summary['total_students'];
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -102,7 +140,10 @@ $total_students = $summary['total_students'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <link rel="icon" href="/mvc//view/img/68e129217733aa0645b48e7c154d2303-_1_.svg" type="image/x-icon">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
@@ -127,6 +168,14 @@ $total_students = $summary['total_students'];
 
         <h1>Quản lý người dùng</h1>
 
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <?php if (!empty($error_message)) { ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?php echo $error_message; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php } ?>
+
         <!-- Bảng thông tin người dùng -->
         <h2 class="mt-5">Danh sách người dùng</h2>
         <table class="table">
@@ -142,109 +191,128 @@ $total_students = $summary['total_students'];
                 </tr>
             </thead>
             <tbody>
-                <?php while ($row = $result->fetch_assoc()) { ?>
-                    <tr>
-                        <td><?php echo $row['email']; ?></td>
-                        <td><?php echo $row['id']; ?></td>
-                        <td><?php echo $row['hoten']; ?></td>
-                        <td><?php echo $row['gioitinh'] == 0 ? 'Nam' : 'Nữ'; ?></td>
-                        <td><?php echo $row['ngaysinh']; ?></td>
-                        <td>
-                            <?php
-                            if ($row['manhomquyen'] == 1) echo 'Admin';
-                            elseif ($row['manhomquyen'] == 10) echo 'Giảng viên';
-                            else echo 'Sinh viên';
-                            ?>
-                        </td>
-                        <td>
-                            <a href="?delete_id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm">Xóa</a>
-                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#updateModal<?php echo $row['id']; ?>">Cập nhật</button>
+                <?php if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) { ?>
+                <tr>
+                    <td><?php echo $row['email']; ?></td>
+                    <td><?php echo $row['masv']; ?></td>
+                    <td><?php echo $row['hoten']; ?></td>
+                    <td><?php echo $row['gioitinh'] == 1 ? 'Nam' : 'Nữ'; ?></td>
+                    <td><?php echo $row['ngaysinh']; ?></td>
+                    <td>
+                        <?php
+                                switch ($row['manhomquyen']) {
+                                    case 1:
+                                        echo "Admin";
+                                        break;
+                                    case 10:
+                                        echo "Giảng viên";
+                                        break;
+                                    case 11:
+                                        echo "Sinh viên";
+                                        break;
+                                    default:
+                                        echo "Khách";
+                                }
+                                ?>
+                    </td>
+                    <td>
+                        <a href="?delete_id=<?php echo $row['id']; ?>" class="btn btn-danger"
+                            onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?')">Xóa</a>
+                        <button class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateModal<?php echo $row['id']; ?>">Cập nhật</button>
+                    </td>
+                </tr>
 
-                            <!-- Modal cập nhật thông tin -->
-                            <div class="modal fade" id="updateModal<?php echo $row['id']; ?>" tabindex="-1"
-                                aria-labelledby="updateModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="updateModalLabel">Cập nhật thông tin người dùng</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form method="POST" action="">
-                                                <input type="hidden" name="update_id" value="<?php echo $row['id']; ?>">
-                                                <div class="mb-3">
-                                                    <label for="new_email" class="form-label">Email</label>
-                                                    <input type="email" class="form-control" name="new_email"
-                                                        value="<?php echo $row['email']; ?>" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="new_hoten" class="form-label">Họ và tên</label>
-                                                    <input type="text" class="form-control" name="new_hoten"
-                                                        value="<?php echo $row['hoten']; ?>" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="new_gioitinh" class="form-label">Giới tính</label>
-                                                    <select class="form-select" name="new_gioitinh">
-                                                        <option value="0"
-                                                            <?php echo $row['gioitinh'] == 0 ? 'selected' : ''; ?>>Nam
-                                                        </option>
-                                                        <option value="1"
-                                                            <?php echo $row['gioitinh'] == 1 ? 'selected' : ''; ?>>Nữ
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="new_ngaysinh" class="form-label">Ngày sinh</label>
-                                                    <input type="date" class="form-control" name="new_ngaysinh"
-                                                        value="<?php echo $row['ngaysinh']; ?>" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="new_manhomquyen" class="form-label">Nhóm quyền</label>
-                                                    <select class="form-select" name="new_manhomquyen">
-                                                        <option value="1"
-                                                            <?php echo $row['manhomquyen'] == 1 ? 'selected' : ''; ?>>Admin
-                                                        </option>
-                                                        <option value="10"
-                                                            <?php echo $row['manhomquyen'] == 10 ? 'selected' : ''; ?>>Giảng
-                                                            viên</option>
-                                                        <option value="11"
-                                                            <?php echo $row['manhomquyen'] == 11 ? 'selected' : ''; ?>>Sinh
-                                                            viên</option>
-                                                    </select>
-                                                </div>
-                                                <button type="submit" name="update_user" class="btn btn-primary">Cập
-                                                    nhật</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                <!-- Modal cập nhật -->
+                <div class="modal fade" id="updateModal<?php echo $row['id']; ?>" tabindex="-1"
+                    aria-labelledby="updateModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateModalLabel">Cập nhật thông tin người dùng</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
-                        </td>
-                    </tr>
+                            <div class="modal-body">
+                                <form method="POST" action="">
+                                    <input type="hidden" name="update_id" value="<?php echo $row['id']; ?>">
+                                    <div class="mb-3">
+                                        <label for="new_email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="new_email" name="new_email"
+                                            value="<?php echo $row['email']; ?>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="new_hoten" class="form-label">Họ và tên</label>
+                                        <input type="text" class="form-control" id="new_hoten" name="new_hoten"
+                                            value="<?php echo $row['hoten']; ?>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="new_gioitinh" class="form-label">Giới tính</label>
+                                        <select class="form-select" id="new_gioitinh" name="new_gioitinh" required>
+                                            <option value="1" <?php echo ($row['gioitinh'] == 1) ? 'selected' : ''; ?>>
+                                                Nam</option>
+                                            <option value="0" <?php echo ($row['gioitinh'] == 0) ? 'selected' : ''; ?>>
+                                                Nữ</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="new_ngaysinh" class="form-label">Ngày sinh</label>
+                                        <input type="date" class="form-control" id="new_ngaysinh" name="new_ngaysinh"
+                                            value="<?php echo $row['ngaysinh']; ?>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="new_manhomquyen" class="form-label">Nhóm quyền</label>
+                                        <select class="form-select" id="new_manhomquyen" name="new_manhomquyen"
+                                            required>
+                                            <option value="1"
+                                                <?php echo ($row['manhomquyen'] == 1) ? 'selected' : ''; ?>>Admin
+                                            </option>
+                                            <option value="10"
+                                                <?php echo ($row['manhomquyen'] == 10) ? 'selected' : ''; ?>>Giảng viên
+                                            </option>
+                                            <option value="11"
+                                                <?php echo ($row['manhomquyen'] == 11) ? 'selected' : ''; ?>>Sinh viên
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" name="update_user" class="btn btn-primary">Cập nhật</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php }
+                } else { ?>
+                <tr>
+                    <td colspan="7">Không có người dùng nào.</td>
+                </tr>
                 <?php } ?>
             </tbody>
         </table>
 
-        <!-- Phân trang -->
-        <?php
-        $total_pages = ceil($total_users / $users_per_page);
-        if ($total_pages > 1) {
-            echo '<nav><ul class="pagination">';
-            for ($i = 1; $i <= $total_pages; $i++) {
-                echo '<li class="page-item' . ($i == $page ? ' active' : '') . '"><a class="page-link" href="?page=' . $i . '">' . $i . '</a></li>';
-            }
-            echo '</ul></nav>';
-        }
-        ?>
+        <!-- Hiển thị phân trang -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <?php
+                $total_pages = ceil($total_users / $users_per_page);
+                for ($i = 1; $i <= $total_pages; $i++) { ?>
+                <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
+                    <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                </li>
+                <?php } ?>
+            </ul>
+        </nav>
 
-        <!-- Thống kê -->
-        <h3 class="mt-5">Thống kê</h3>
-        <p>Tổng số giảng viên: <?php echo $total_teachers; ?></p>
-        <p>Tổng số sinh viên: <?php echo $total_students; ?></p>
+        <!-- Hiển thị tổng số giảng viên và sinh viên -->
+        <h2>Tổng số người dùng</h2>
+        <p>Giảng viên: <?php echo $total_teachers; ?></p>
+        <p>Sinh viên: <?php echo $total_students; ?></p>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
+
+<?php
+$conn->close(); // Đóng kết nối
+?>
