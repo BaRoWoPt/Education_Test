@@ -195,7 +195,7 @@ $total_students = $summary['total_students'];
                     while ($row = $result->fetch_assoc()) { ?>
                 <tr>
                     <td><?php echo $row['email']; ?></td>
-                    <td><?php echo $row['masv']; ?></td>
+                    <td><?php echo $row['id']; ?></td>
                     <td><?php echo $row['hoten']; ?></td>
                     <td><?php echo $row['gioitinh'] == 1 ? 'Nam' : 'Nữ'; ?></td>
                     <td><?php echo $row['ngaysinh']; ?></td>
