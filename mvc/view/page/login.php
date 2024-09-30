@@ -177,7 +177,7 @@ $conn->close();
                 </form>
 
                 <div class="d-flex justify-content-between">
-                    <a href="/mvc/view/page/forgot_password.php" class="text-small">Quên mật khẩu</a>
+                    <a href="/mvc/view/page/reset_password.php" class="text-small">Quên mật khẩu</a>
                     <a href="/mvc/view/page/signup.php" class="text-small">+ New Account</a>
                 </div>
             </div>
