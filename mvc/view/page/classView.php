@@ -25,6 +25,11 @@ if ($manhomquyen != 10) {
     exit; // Ngừng thực thi nếu không có quyền
 }
 
+// Phân trang
+$limit = 5; // Số lượng nhóm mỗi trang
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Lấy số trang hiện tại
+$offset = ($page - 1) * $limit; // Tính toán vị trí bắt đầu
+
 // Lấy danh sách sinh viên từ bảng nguoidung
 $sinhVienQuery = "SELECT id, hoten FROM nguoidung WHERE trangthai = 1 AND manhomquyen = 11"; // Chỉ lấy sinh viên đang hoạt động
 $sinhVienResult = $conn->query($sinhVienQuery);
@@ -80,20 +85,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     $deleteStmt->bind_param("is", $manhom, $manguoidung);
 
     if ($deleteStmt->execute()) {
-        echo "<script>alert('Xóa sinh viên thành công.');</script>";
-        // Chuyển hướng về trang hiện tại sau khi xóa
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit; // Dừng thực thi script sau khi chuyển hướng
+        // Thiết lập biến thông báo
+        $_SESSION['delete_message'] = 'Xóa sinh viên thành công.';
     } else {
-        echo "<script>alert('Có lỗi khi xóa sinh viên.');</script>";
+        $_SESSION['delete_message'] = 'Có lỗi khi xóa sinh viên.';
     }
 
     $deleteStmt->close();
+    // Chuyển hướng về trang hiện tại sau khi xóa
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit; // Dừng thực thi script sau khi chuyển hướng
 }
 
-// Lấy danh sách nhóm học phần hiện có
-$groupsQuery = "SELECT * FROM nhom";
+
+// Lấy danh sách nhóm học phần hiện có với phân trang
+$groupsQuery = "SELECT * FROM nhom LIMIT $limit OFFSET $offset";
 $groupsResult = $conn->query($groupsQuery);
+
+// Đếm tổng số nhóm để tính toán số trang
+$totalGroupsQuery = "SELECT COUNT(*) as total FROM nhom";
+$totalGroupsResult = $conn->query($totalGroupsQuery);
+$totalGroups = $totalGroupsResult->fetch_assoc()['total'];
+$totalPages = ceil($totalGroups / $limit);
 ?>
 
 <!DOCTYPE html>
@@ -112,27 +125,55 @@ $groupsResult = $conn->query($groupsQuery);
 
     .sidebar {
         height: 100vh;
-        background-color: #2c3e50;
-        color: #fff;
+        width: 250px;
+        background-color: #a12c2f;
+        position: fixed;
+        color: white;
         padding-top: 20px;
     }
 
-    .sidebar a {
-        color: #fff;
-        text-decoration: none;
-        margin: 10px 0;
-        display: block;
-        padding: 10px 20px;
+    .sidebar a:hover {
+        background-color: #921e24;
     }
 
-    .sidebar a:hover {
-        background-color: #34495e;
+
+    .sidebar h2 {
+        text-align: center;
+        font-weight: bold;
+        color: white;
+    }
+
+    .menu-section {
+        margin-bottom: 20px;
+        margin-top: 60px;
+    }
+
+    .menu-section h3 {
+        font-size: 16px;
+        text-transform: uppercase;
+        margin-left: 20px;
+        margin-bottom: 10px;
+        color: #FFD700;
+    }
+
+    .sidebar a {
+        display: block;
+        padding: 10px 20px;
+        color: white;
         text-decoration: none;
+        font-size: 18px;
     }
 
     .content {
+        margin-left: 250px;
         padding: 20px;
-        background-color: #ecf0f1;
+    }
+
+    .btn-primary,
+    .btn-info {
+        background-color: #821131;
+        color: #FFD700;
+        border: none;
     }
     </style>
 </head>
@@ -140,21 +181,37 @@ $groupsResult = $conn->query($groupsQuery);
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2 sidebar">
-                <h3 class="text-center">SGU Test</h3>
-                <a href="#">Tổng quan</a>
-                <a href="#">Nhóm học phần</a>
-                <a href="#">Câu hỏi</a>
-                <a href="#">Người dùng</a>
-                <a href="#">Môn học</a>
-                <a href="#">Phân công</a>
-                <a href="#">Đề kiểm tra</a>
-                <a href="#">Thông báo</a>
-                <a href="#">Nhóm quyền</a>
+            <div class="sidebar">
+                <h2><span style="color:#821131;">HUFLIT</span> <span style="color:#FFD700">TEST</span> </h2>
+
+                <div class="menu-section">
+                    <h3>Quản lý</h3>
+                    <a href="../page/dashboard.php">Tổng quan</a>
+                    <a href="../page/classView.php">Nhóm học phần</a>
+                    <a href="#">Câu hỏi</a>
+                    <a href="#">Người dùng</a>
+                    <a href="#">Môn học</a>
+                    <!-- <a href="#">Phân công</a> -->
+                    <a href="#">Đề kiểm tra</a>
+                    <a href="#">Thông báo</a>
+                </div>
+
+                <!-- <div class="menu-section">
+            <h3>Quản trị</h3>
+            <a href="#">Nhóm quyền</a>
+        </div> -->
             </div>
 
             <div class="col-md-10 content">
                 <h4>Danh Sách Nhóm Học Phần</h4>
+                <?php if (isset($_SESSION['delete_message'])) : ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <?php echo $_SESSION['delete_message']; ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <?php unset($_SESSION['delete_message']); // Xóa thông báo sau khi hiển thị 
+                    ?>
+                <?php endif; ?>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGroupModal">+ Thêm
                     Nhóm</button>
 
@@ -185,6 +242,17 @@ $groupsResult = $conn->query($groupsQuery);
                         <?php endwhile; ?>
                     </tbody>
                 </table>
+
+                <!-- Phân trang -->
+                <nav>
+                    <ul class="pagination">
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
+                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        </li>
+                        <?php endfor; ?>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -194,14 +262,14 @@ $groupsResult = $conn->query($groupsQuery);
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addGroupModalLabel">Thêm Nhóm Học Phần Mới</h5>
+                    <h5 class="modal-title" id="addGroupModalLabel">Thêm Nhóm Học Phần</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="" method="POST">
+                    <form method="POST" action="">
                         <div class="mb-3">
                             <label for="manhom" class="form-label">Mã Nhóm</label>
-                            <input type="number" class="form-control" id="manhom" name="manhom" required>
+                            <input type="text" class="form-control" id="manhom" name="manhom" required>
                         </div>
                         <div class="mb-3">
                             <label for="tennhom" class="form-label">Tên Nhóm</label>
@@ -221,7 +289,7 @@ $groupsResult = $conn->query($groupsQuery);
                         </div>
                         <div class="mb-3">
                             <label for="students" class="form-label">Chọn Sinh Viên</label>
-                            <select class="form-select" id="students" name="students[]" multiple required>
+                            <select multiple class="form-select" id="students" name="students[]" required>
                                 <?php foreach ($sinhViens as $sinhVien): ?>
                                 <option value="<?php echo $sinhVien['id']; ?>"><?php echo $sinhVien['hoten']; ?>
                                 </option>
@@ -252,8 +320,8 @@ $groupsResult = $conn->query($groupsQuery);
                                 <th>Hành Động</th>
                             </tr>
                         </thead>
-                        <tbody id="studentList">
-                            <!-- Danh sách sinh viên sẽ được điền bằng AJAX -->
+                        <tbody id="studentListBody">
+                            <!-- Danh sách sinh viên sẽ được nạp bằng JavaScript -->
                         </tbody>
                     </table>
                 </div>
@@ -261,67 +329,43 @@ $groupsResult = $conn->query($groupsQuery);
         </div>
     </div>
 
-    <!-- Modal để Xóa Sinh Viên -->
-    <div class="modal fade" id="deleteStudentModal" tabindex="-1" aria-labelledby="deleteStudentModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteStudentModalLabel">Xóa Sinh Viên</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Bạn có chắc chắn muốn xóa sinh viên này không?
-                </div>
-                <div class="modal-footer">
-                    <form action="" method="POST">
-                        <input type="hidden" id="delete_manguoidung" name="manguoidung" value="">
-                        <input type="hidden" id="delete_manhom" name="manhom" value="">
-                        <input type="hidden" name="action" value="delete_student">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-danger">Xóa</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // Bắt sự kiện khi mở modal để xem sinh viên
-    var viewStudentsModal = document.getElementById('viewStudentsModal');
-    viewStudentsModal.addEventListener('show.bs.modal', function(event) {
-        var button = event.relatedTarget; // nút đã nhấn
-        var manhom = button.getAttribute('data-manhom'); // lấy mã nhóm
+    // Nạp danh sách sinh viên vào modal khi nhấn nút "Xem Sinh Viên"
+    document.addEventListener('DOMContentLoaded', function() {
+        var viewStudentsButtons = document.querySelectorAll('[data-bs-target="#viewStudentsModal"]');
 
-        // Gửi yêu cầu AJAX để lấy danh sách sinh viên
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'get_students.php?manhom=' + manhom, true);
-        xhr.onload = function() {
-            if (this.status === 200) {
-                document.getElementById('studentList').innerHTML = this
-                    .responseText; // Cập nhật danh sách sinh viên
-            }
-        };
-        xhr.send();
-    });
+        viewStudentsButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var manhom = button.getAttribute('data-manhom');
+                var studentListBody = document.getElementById('studentListBody');
 
-    // Bắt sự kiện khi mở modal xóa sinh viên
-    var deleteStudentModal = document.getElementById('deleteStudentModal');
-    deleteStudentModal.addEventListener('show.bs.modal', function(event) {
-        var button = event.relatedTarget; // nút đã nhấn
-        var manguoidung = button.getAttribute('data-manguoidung'); // lấy mã sinh viên
-        var manhom = button.getAttribute('data-manhom'); // lấy mã nhóm
+                // Xóa nội dung cũ
+                studentListBody.innerHTML = '';
 
-        // Cập nhật các giá trị vào modal xóa sinh viên
-        document.getElementById('delete_manguoidung').value = manguoidung;
-        document.getElementById('delete_manhom').value = manhom;
+                // Gửi yêu cầu AJAX để lấy danh sách sinh viên trong nhóm
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'get_students.php?manhom=' + manhom, true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        var students = JSON.parse(xhr.responseText);
+                        students.forEach(function(student) {
+                            var row = document.createElement('tr');
+                            row.innerHTML = '<td>' + student.hoten + '</td>' +
+                                '<td><form method="POST" action=""><input type="hidden" name="manhom" value="' +
+                                manhom + '">' +
+                                '<input type="hidden" name="manguoidung" value="' +
+                                student.id + '">' +
+                                '<button type="submit" name="action" value="delete_student" class="btn btn-danger">Xóa</button></form></td>';
+                            studentListBody.appendChild(row);
+                        });
+                    }
+                };
+                xhr.send();
+            });
+        });
     });
     </script>
 </body>
 
 </html>
-
-<?php
-$conn->close();
-?>
