@@ -123,7 +123,7 @@ if (!isset($_SESSION['user_id'])) {
         <div class="menu-section">
             <h3>Quản lý</h3>
             <a href="#">Tổng quan</a>
-            <a href="#">Nhóm học phần</a>
+            <a href="../page/classView.php">Nhóm học phần</a>
             <a href="#">Câu hỏi</a>
             <a href="#">Người dùng</a>
             <a href="#">Môn học</a>

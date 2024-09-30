@@ -18,7 +18,7 @@ $hashed_password = password_hash($plain_password, PASSWORD_DEFAULT); // Mã hóa
 
 // Thêm người dùng
 $sql = "INSERT INTO nguoidung (email, id, hoten, gioitinh, ngaysinh, matkhau, trangthai, manhomquyen) 
-        VALUES ('newuser@example.com', 'newuser123', 'Nguyễn Văn A', 1, '2000-01-01', ?, 1, 1)";
+        VALUES ('newuser@example.com', 'nnguoidung', 'Nguyễn Văn A', 1, '2000-01-01', ?, 1, 11)";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $hashed_password);
