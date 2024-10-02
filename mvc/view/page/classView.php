@@ -11,7 +11,10 @@ $conn = new mysqli($server, $user, $pass, $database);
 if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
+include 'getGiangViens.php'; // Bao gồm file lấy giảng viên
 
+// Lấy danh sách giảng viên
+$giangViens = getGiangViens($conn);
 // Thiết lập mã hóa để làm việc với UTF-8
 $conn->set_charset('utf8');
 
@@ -74,7 +77,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['action'])) {
 }
 
 // Kiểm tra nếu có yêu cầu xóa sinh viên
-// Kiểm tra nếu có yêu cầu xóa sinh viên
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'delete_student') {
     $manhom = $_POST['manhom'];
     $manguoidung = $_POST['manguoidung'];
@@ -107,6 +109,9 @@ $totalGroupsQuery = "SELECT COUNT(*) as total FROM nhom";
 $totalGroupsResult = $conn->query($totalGroupsQuery);
 $totalGroups = $totalGroupsResult->fetch_assoc()['total'];
 $totalPages = ceil($totalGroups / $limit);
+
+$query = "SELECT id, hoten FROM nguoidung WHERE manhomquyen = 10";
+$result = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
@@ -221,7 +226,7 @@ $totalPages = ceil($totalGroups / $limit);
                             <th>Mã Nhóm</th>
                             <th>Tên Nhóm</th>
                             <th>Sĩ Số</th>
-                            <th>Giảng Viên</th>
+                            <th>Mã giảng viên</th>
                             <th>Mã Môn Học</th>
                             <th>Danh Sách Sinh Viên</th>
                         </tr>
@@ -235,13 +240,15 @@ $totalPages = ceil($totalGroups / $limit);
                             <td><?php echo $group['giangvien']; ?></td>
                             <td><?php echo $group['mamonhoc']; ?></td>
                             <td>
-                                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewStudentsModal"
-                                    data-manhom="<?php echo $group['manhom']; ?>">Xem Sinh Viên</button>
+                                <!-- Thay thế nút modal bằng thẻ <a> -->
+                                <a href="view_students.php?manhom=<?php echo $group['manhom']; ?>"
+                                    class="btn btn-primary">Xem sinh viên</a>
                             </td>
                         </tr>
                         <?php endwhile; ?>
                     </tbody>
                 </table>
+
 
                 <!-- Phân trang -->
                 <nav>
@@ -281,7 +288,13 @@ $totalPages = ceil($totalGroups / $limit);
                         </div>
                         <div class="mb-3">
                             <label for="giangvien" class="form-label">Giảng Viên</label>
-                            <input type="text" class="form-control" id="giangvien" name="giangvien" required>
+                            <select class="form-select" id="giangvien" name="giangvien" required>
+                                <option value="">Chọn giảng viên</option>
+                                <?php foreach ($giangViens as $giangVien): ?>
+                                <option value="<?php echo $giangVien['id']; ?>"><?php echo $giangVien['hoten']; ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="mamonhoc" class="form-label">Mã Môn Học</label>
@@ -302,32 +315,7 @@ $totalPages = ceil($totalGroups / $limit);
             </div>
         </div>
     </div>
-
     <!-- Modal để Xem Sinh Viên -->
-    <div class="modal fade" id="viewStudentsModal" tabindex="-1" aria-labelledby="viewStudentsModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewStudentsModalLabel">Danh Sách Sinh Viên</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Tên Sinh Viên</th>
-                                <th>Hành Động</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentListBody">
-                            <!-- Danh sách sinh viên sẽ được nạp bằng JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
