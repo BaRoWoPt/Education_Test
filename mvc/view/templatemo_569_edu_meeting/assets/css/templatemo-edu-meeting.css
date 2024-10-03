@@ -390,9 +390,28 @@ header
 }
 .login,
 .logout {
-  background-color: #c4c4c4;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
   border-radius: 8px;
+  padding: 12px 20px;
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  margin: 20px 0; /* Thêm khoảng cách giữa các thẻ */
 }
+
+.login:hover,
+.logout:hover {
+  background-color: #e0e0e0;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+.logout {
+  margin-right: 16px;
+}
+
 .header-area .main-nav .nav li {
   padding-left: 15px;
   padding-right: 15px;
@@ -421,7 +440,11 @@ header
 .header-area .main-nav .nav li a.active {
   color: #f5a425 !important;
 }
-
+.main-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .background-header .main-nav .nav li:hover a,
 .background-header .main-nav .nav li a.active {
   color: #f5a425 !important;
