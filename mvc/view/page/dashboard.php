@@ -41,6 +41,18 @@ if (!isset($_SESSION['user_id'])) {
         color: white;
     }
 
+    .sidebar a {
+        display: block;
+        padding: 10px 20px;
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+    }
+
+    .sidebar a:hover {
+        background-color: #921e24;
+    }
+
     .menu-section {
         margin-bottom: 20px;
         margin-top: 60px;
@@ -54,17 +66,7 @@ if (!isset($_SESSION['user_id'])) {
         color: #FFD700;
     }
 
-    .sidebar a {
-        display: block;
-        padding: 10px 20px;
-        color: white;
-        text-decoration: none;
-        font-size: 18px;
-    }
 
-    .sidebar a:hover {
-        background-color: #921e24;
-    }
 
     .content {
         margin-left: 250px;
