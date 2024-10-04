@@ -17,10 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['mamonhoc'])) {
     $sotinchi = $_POST['sotinchi'];
     $sotietlythuyet = $_POST['sotietlythuyet'];
     $sotietthuchanh = $_POST['sotietthuchanh'];
-    $trangthai = isset($_POST['trangthai']) ? 1 : 0;
+    $trangthai = isset($_POST['trangthai']) ? 1 : 0; // Kiểm tra trạng thái
 
     if (isset($_POST['id']) && !empty($_POST['id'])) {
         $id = $_POST['id'];
+        // Cập nhật môn học
         $sql = "UPDATE monhoc SET 
                 tenmonhoc='$tenmonhoc',
                 sotinchi='$sotinchi',
@@ -29,6 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['mamonhoc'])) {
                 trangthai='$trangthai'
                 WHERE mamonhoc='$id'";
     } else {
+        // Thêm môn học mới
         $sql = "INSERT INTO monhoc (mamonhoc, tenmonhoc, sotinchi, sotietlythuyet, sotietthuchanh, trangthai)
                 VALUES ('$mamonhoc', '$tenmonhoc', '$sotinchi', '$sotietlythuyet', '$sotietthuchanh', '$trangthai')";
     }
@@ -37,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['mamonhoc'])) {
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     } else {
-        echo "Lỗi: " . $conn->error;
+        echo "Lỗi: " . $conn->error; // Hiển thị lỗi nếu có
     }
 }
 
@@ -65,6 +67,7 @@ $result = $conn->query($sql);
     <title>Quản lý môn học</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
+    /* CSS cho giao diện */
     body {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -196,11 +199,10 @@ $result = $conn->query($sql);
         <h2><span style="color:#821131;">HUFLIT</span> <span style="color:#FFD700">TEST</span></h2>
         <div class="menu-section">
             <h3>Quản lý</h3>
-            <a href="#">Tổng quan</a>
+            <a href="../page/dashboard.php">Tổng quan</a>
             <a href="../page/classView.php">Nhóm học phần</a>
-            <a href="#">Câu hỏi</a>
-            <a href="#">Người dùng</a>
-            <a href="#">Môn học</a>
+            <a href="../page/question_view.php">Câu hỏi</a>
+            <a href="../page/learning.php">Môn học</a>
             <a href="#">Đề kiểm tra</a>
             <a href="#">Thông báo</a>
         </div>
@@ -262,62 +264,72 @@ $result = $conn->query($sql);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()) { ?>
+                    <?php if ($result->num_rows > 0): ?>
+                    <?php while ($row = $result->fetch_assoc()): ?>
                     <tr>
                         <td><?php echo $row['mamonhoc']; ?></td>
                         <td><?php echo $row['tenmonhoc']; ?></td>
                         <td><?php echo $row['sotinchi']; ?></td>
                         <td><?php echo $row['sotietlythuyet']; ?></td>
                         <td><?php echo $row['sotietthuchanh']; ?></td>
-                        <td><?php echo $row['trangthai'] ? 'Hoạt động' : 'Không hoạt động'; ?></td>
+                        <td><?php echo $row['trangthai'] ? 'Hoạt động' : 'Ngưng hoạt động'; ?></td>
                         <td>
-                            <button class="edit btn btn-success" data-toggle="modal" data-target="#editModal"
+                            <a href="#" class="edit" data-toggle="modal" data-target="#editModal"
                                 data-mamonhoc="<?php echo $row['mamonhoc']; ?>"
                                 data-tenmonhoc="<?php echo $row['tenmonhoc']; ?>"
                                 data-sotinchi="<?php echo $row['sotinchi']; ?>"
                                 data-sotietlythuyet="<?php echo $row['sotietlythuyet']; ?>"
                                 data-sotietthuchanh="<?php echo $row['sotietthuchanh']; ?>"
-                                data-trangthai="<?php echo $row['trangthai']; ?>">Sửa
-                            </button>
-                            <a href="?delete=<?php echo $row['mamonhoc']; ?>" class="delete btn btn-danger">Xóa</a>
+                                data-trangthai="<?php echo $row['trangthai']; ?>">Sửa</a>
+                            <a href="?delete=<?php echo $row['mamonhoc']; ?>" class="delete">Xóa</a>
                         </td>
                     </tr>
-                    <?php } ?>
+                    <?php endwhile; ?>
+                    <?php else: ?>
+                    <tr>
+                        <td colspan="7">Không có dữ liệu môn học.</td>
+                    </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
-        </div>
-    </div>
 
-    <!-- Modal sửa môn học -->
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form method="post" action="">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Sửa môn học</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+            <!-- Modal chỉnh sửa môn học -->
+            <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form method="post" action="">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Chỉnh sửa môn học</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="id" id="edit-id">
+                                <label>Mã môn học</label>
+                                <input type="text" name="mamonhoc" id="edit-mamonhoc" class="form-control" required
+                                    readonly>
+                                <label>Tên môn học</label>
+                                <input type="text" name="tenmonhoc" id="edit-tenmonhoc" class="form-control" required>
+                                <label>Số tín chỉ</label>
+                                <input type="number" name="sotinchi" id="edit-sotinchi" class="form-control">
+                                <label>Số tiết lý thuyết</label>
+                                <input type="number" name="sotietlythuyet" id="edit-sotietlythuyet"
+                                    class="form-control">
+                                <label>Số tiết thực hành</label>
+                                <input type="number" name="sotietthuchanh" id="edit-sotietthuchanh"
+                                    class="form-control">
+                                <label>Trạng thái</label>
+                                <input type="checkbox" name="trangthai" id="edit-trangthai" value="1"> Hoạt động
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="modal-body">
-                        <input type="hidden" name="mamonhoc" id="edit-mamonhoc">
-                        <label>Tên môn học</label>
-                        <input type="text" name="tenmonhoc" id="edit-tenmonhoc" class="form-control" required>
-                        <label>Số tín chỉ</label>
-                        <input type="number" name="sotinchi" id="edit-sotinchi" class="form-control">
-                        <label>Số tiết lý thuyết</label>
-                        <input type="number" name="sotietlythuyet" id="edit-sotietlythuyet" class="form-control">
-                        <label>Số tiết thực hành</label>
-                        <input type="number" name="sotietthuchanh" id="edit-sotietthuchanh" class="form-control">
-                        <label>Trạng thái</label>
-                        <input type="checkbox" name="trangthai" id="edit-trangthai" value="1"> Hoạt động
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                        <button type="submit" class="btn btn-primary">Cập nhật</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -327,8 +339,9 @@ $result = $conn->query($sql);
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
+    // JavaScript xử lý cho modal chỉnh sửa
     $('#editModal').on('show.bs.modal', function(event) {
-        var button = $(event.relatedTarget);
+        var button = $(event.relatedTarget); // Lấy button đã kích hoạt modal
         var mamonhoc = button.data('mamonhoc');
         var tenmonhoc = button.data('tenmonhoc');
         var sotinchi = button.data('sotinchi');
@@ -337,6 +350,7 @@ $result = $conn->query($sql);
         var trangthai = button.data('trangthai');
 
         var modal = $(this);
+        modal.find('#edit-id').val(mamonhoc);
         modal.find('#edit-mamonhoc').val(mamonhoc);
         modal.find('#edit-tenmonhoc').val(tenmonhoc);
         modal.find('#edit-sotinchi').val(sotinchi);

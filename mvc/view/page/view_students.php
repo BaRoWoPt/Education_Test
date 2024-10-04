@@ -6,9 +6,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh sách sinh viên</title>
     <style>
+    /* General styles */
+    body {
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        display: flex;
+        height: 100vh;
+    }
+
+    /* Sidebar styles */
+    .sidebar {
+        height: 100vh;
+        width: 250px;
+        background-color: #a12c2f;
+        position: fixed;
+        color: white;
+        padding-top: 20px;
+    }
+
+    .sidebar a:hover {
+        background-color: #921e24;
+    }
+
+
+    .sidebar h2 {
+        text-align: center;
+        font-weight: bold;
+        color: white;
+    }
+
+    .menu-section {
+        margin-bottom: 20px;
+        margin-top: 60px;
+    }
+
+    .menu-section h3 {
+        font-size: 16px;
+        text-transform: uppercase;
+        margin-left: 20px;
+        margin-bottom: 10px;
+        color: #FFD700;
+    }
+
+    .sidebar a {
+        display: block;
+        padding: 10px 20px;
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+    }
+
+    /* Main content styles */
+    .main-content {
+        margin-left: 250px;
+        padding: 20px;
+        flex-grow: 1;
+    }
+
+    h1 {
+        color: #AA2E25;
+    }
+
     table {
         width: 100%;
         border-collapse: collapse;
+        margin-bottom: 20px;
     }
 
     table,
@@ -19,57 +81,97 @@
 
     th,
     td {
-        padding: 8px;
-        text-align: left;
+        padding: 10px;
+        text-align: center;
     }
 
     th {
         background-color: #f2f2f2;
     }
 
-    button {
-        background-color: #ff4d4d;
+    /* Button styles */
+    .button-add,
+    .button-delete {
+        background-color: #AA2E25;
         color: white;
         border: none;
-        padding: 5px 10px;
+        padding: 8px 15px;
         cursor: pointer;
+        border-radius: 5px;
     }
 
-    button:hover {
-        background-color: #e60000;
+    .button-add:hover {
+        background-color: #E63946;
     }
 
+    .button-delete:hover {
+        background-color: #D62828;
+    }
+
+    .h2,
+    h2 {
+        font-size: calc(1.325rem + .9vw)
+    }
+
+    /* Search input style */
     input[type="text"] {
-        padding: 5px;
-        margin-bottom: 10px;
+        padding: 10px;
+        width: 100%;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
     }
     </style>
 </head>
 
 <body>
-    <h1>Danh sách sinh viên trong nhóm</h1>
 
-    <!-- Thêm ô nhập và nút tìm kiếm -->
-    <div>
-        <input type="text" id="searchInput" placeholder="Tìm kiếm theo ID hoặc họ tên" onkeyup="searchStudents()">
+    <!-- Sidebar Section -->
+    <div class="sidebar">
+        <h2><span style="color:#821131;">HUFLIT</span> <span style="color:#FFD700">TEST</span> </h2>
+
+        <div class="menu-section">
+            <h3>Quản lý</h3>
+            <a href="../page/dashboard.php">Tổng quan</a>
+            <a href="../page/classView.php">Nhóm học phần</a>
+            <a href="../page/question_view.php">Câu hỏi</a>
+            <a href="../page/learning.php">Môn học</a>
+            <a href="#">Đề kiểm tra</a>
+            <a href="#">Thông báo</a>
+        </div>
+
+        <!-- <div class="menu-section">
+            <h3>Quản trị</h3>
+            <a href="#">Nhóm quyền</a>
+        </div> -->
     </div>
 
-    <table id="studentTable">
-        <tr>
-            <th>ID Sinh viên</th>
-            <th>Họ tên</th>
-            <th>Hành động</th>
-        </tr>
-    </table>
+    <!-- Main Content Section -->
+    <div class="main-content">
+        <h1>Danh sách sinh viên trong nhóm</h1>
 
-    <h2>Danh sách sinh viên khả dụng để thêm vào nhóm</h2>
-    <table id="availableStudentsTable">
-        <tr>
-            <th>ID Sinh viên</th>
-            <th>Họ tên</th>
-            <th>Hành động</th>
-        </tr>
-    </table>
+        <!-- Thêm ô nhập và nút tìm kiếm -->
+        <div>
+            <input type="text" id="searchInput" placeholder="Tìm kiếm theo ID hoặc họ tên" onkeyup="searchStudents()">
+        </div>
+
+        <table id="studentTable">
+            <tr>
+                <th>ID Sinh viên</th>
+                <th>Họ tên</th>
+                <th>Hành động</th>
+            </tr>
+        </table>
+
+        <h2>Danh sách sinh viên khả dụng để thêm vào nhóm</h2>
+        <table id="availableStudentsTable">
+            <tr>
+                <th>ID Sinh viên</th>
+                <th>Họ tên</th>
+                <th>Hành động</th>
+            </tr>
+        </table>
+    </div>
 
     <script>
     // Lấy mã nhóm từ URL
@@ -96,6 +198,7 @@
                     // Thêm nút Xóa
                     const deleteButton = document.createElement('button');
                     deleteButton.textContent = 'Xóa';
+                    deleteButton.classList.add('button-delete');
                     deleteButton.onclick = () => {
                         if (confirm('Bạn có chắc chắn muốn xóa sinh viên này?')) {
                             deleteStudent(manhom, student.manguoidung);
@@ -127,6 +230,7 @@
                     // Thêm nút Thêm vào nhóm
                     const addButton = document.createElement('button');
                     addButton.textContent = 'Thêm';
+                    addButton.classList.add('button-add');
                     addButton.onclick = () => {
                         addStudent(manhom, student.id);
                     };
@@ -211,6 +315,7 @@
             });
     }
     </script>
+
 </body>
 
 </html>

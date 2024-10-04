@@ -33,6 +33,18 @@ $limit = 5; // Số lượng nhóm mỗi trang
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Lấy số trang hiện tại
 $offset = ($page - 1) * $limit; // Tính toán vị trí bắt đầu
 
+// Lấy danh sách mã môn học
+$maMonQuery = "SELECT mamonhoc FROM monhoc";
+$maMonResult = $conn->query($maMonQuery);
+$maMons = [];
+
+if ($maMonResult->num_rows > 0) {
+    while ($row = $maMonResult->fetch_assoc()) {
+        $maMons[] = $row;
+    }
+}
+
+
 // Lấy danh sách sinh viên từ bảng nguoidung
 $sinhVienQuery = "SELECT id, hoten FROM nguoidung WHERE trangthai = 1 AND manhomquyen = 11"; // Chỉ lấy sinh viên đang hoạt động
 $sinhVienResult = $conn->query($sinhVienQuery);
@@ -193,10 +205,8 @@ $result = mysqli_query($conn, $query);
                     <h3>Quản lý</h3>
                     <a href="../page/dashboard.php">Tổng quan</a>
                     <a href="../page/classView.php">Nhóm học phần</a>
-                    <a href="#">Câu hỏi</a>
-                    <a href="#">Người dùng</a>
-                    <a href="#">Môn học</a>
-                    <!-- <a href="#">Phân công</a> -->
+                    <a href="../page/question_view.php">Câu hỏi</a>
+                    <a href="../page/learning.php">Môn học</a>
                     <a href="#">Đề kiểm tra</a>
                     <a href="#">Thông báo</a>
                 </div>
@@ -265,6 +275,7 @@ $result = mysqli_query($conn, $query);
     </div>
 
     <!-- Modal để Thêm Nhóm -->
+    <!-- Modal để Thêm Nhóm -->
     <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -298,7 +309,13 @@ $result = mysqli_query($conn, $query);
                         </div>
                         <div class="mb-3">
                             <label for="mamonhoc" class="form-label">Mã Môn Học</label>
-                            <input type="text" class="form-control" id="mamonhoc" name="mamonhoc" required>
+                            <select class="form-select" id="mamonhoc" name="mamonhoc" required>
+                                <option value="">Chọn mã môn học</option>
+                                <?php foreach ($maMons as $maMon): ?>
+                                <option value="<?php echo $maMon['mamonhoc']; ?>"><?php echo $maMon['mamonhoc']; ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="students" class="form-label">Chọn Sinh Viên</label>
@@ -315,6 +332,7 @@ $result = mysqli_query($conn, $query);
             </div>
         </div>
     </div>
+
     <!-- Modal để Xem Sinh Viên -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

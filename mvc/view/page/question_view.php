@@ -155,16 +155,13 @@
 <body>
 
     <div class="sidebar">
-        <h2>HUFLIT TEST</h2>
-        <a href="#">Tổng quan</a>
-        <a href="#">Nhóm học phần</a>
-        <a href="#">Câu hỏi</a>
-        <a href="#">Người dùng</a>
-        <a href="#">Môn học</a>
-        <a href="#">Phân công</a>
-        <a href="#">Điểm kiểm tra</a>
+        <h3>Quản lý</h3>
+        <a href="../page/dashboard.php">Tổng quan</a>
+        <a href="../page/classView.php">Nhóm học phần</a>
+        <a href="../page/question_view.php">Câu hỏi</a>
+        <a href="../page/learning.php">Môn học</a>
+        <a href="#">Đề kiểm tra</a>
         <a href="#">Thông báo</a>
-        <a href="#">Nhóm quyền</a>
     </div>
 
     <div class="content">

@@ -4,6 +4,11 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
+if ($_SESSION['manhomquyen'] != 10) {
+    // Nếu không phải, chuyển hướng về trang khác (ví dụ trang lỗi hoặc trang khác phù hợp)
+    header("Location: login.php"); // Hoặc một trang khác tùy vào logic của bạn
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -124,12 +129,10 @@ if (!isset($_SESSION['user_id'])) {
 
         <div class="menu-section">
             <h3>Quản lý</h3>
-            <a href="#">Tổng quan</a>
+            <a href="../page/dashboard.php">Tổng quan</a>
             <a href="../page/classView.php">Nhóm học phần</a>
-            <a href="#">Câu hỏi</a>
-            <a href="#">Người dùng</a>
-            <a href="#">Môn học</a>
-            <!-- <a href="#">Phân công</a> -->
+            <a href="../page/question_view.php">Câu hỏi</a>
+            <a href="../page/learning.php">Môn học</a>
             <a href="#">Đề kiểm tra</a>
             <a href="#">Thông báo</a>
         </div>
