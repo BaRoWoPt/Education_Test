@@ -388,7 +388,7 @@ $result = $conn->query($sql);
                             <input type="checkbox" name="ladapan[3]"> Đáp án đúng
                         </div>
                     </div>
-                    <button class="save-button" type="submit" name="submit">Thêm câu hỏi</button>
+                    <button type="submit" name="submit">Thêm câu hỏi</button>
                 </form>
             </div>
         </div>
@@ -436,7 +436,7 @@ $result = $conn->query($sql);
                         <label>Câu trả lời:</label>
                         <!-- Các câu trả lời sẽ được thêm vào đây -->
                     </div>
-                    <button class="save-button" type="submit" name="edit">Cập nhật câu hỏi</button>
+                    <button type="submit" name="edit">Cập nhật câu hỏi</button>
                 </form>
             </div>
         </div>
