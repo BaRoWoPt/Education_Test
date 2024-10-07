@@ -9,7 +9,14 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
+session_start();
+$manhomquyen = $_SESSION['manhomquyen'] ?? 0; // Mặc định là 0 nếu không có quyền
 
+// Kiểm tra quyền truy cập
+if ($manhomquyen != 10) {
+    echo "Bạn không có quyền truy cập vào danh sách sinh viên.";
+    exit; // Ngừng thực thi nếu không có quyền
+}
 // Xử lý thêm và cập nhật môn học
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['mamonhoc'])) {
     $mamonhoc = $_POST['mamonhoc'];
