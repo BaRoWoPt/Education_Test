@@ -1,13 +1,34 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
-}
-if ($_SESSION['manhomquyen'] != 10) {
-    // Nếu không phải, chuyển hướng về trang khác (ví dụ trang lỗi hoặc trang khác phù hợp)
-    header("Location: login.php"); // Hoặc một trang khác tùy vào logic của bạn
-    exit();
+include 'connect.php'; // Kết nối đến cơ sở dữ liệu
+// Kiểm tra xem người dùng đã đăng nhập chưa
+
+
+// Lấy ID người dùng từ session
+$userId = $_SESSION['user_id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Lấy thông tin đăng nhập từ biểu mẫu
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Truy vấn cơ sở dữ liệu để lấy thông tin người dùng
+    $stmt = $conn->prepare("SELECT id, manhomquyen FROM nguoidung WHERE username = ? AND password = ?");
+    $stmt->bind_param("ss", $username, $password); // Giả sử mật khẩu được lưu trữ dưới dạng plaintext (không nên làm như vậy trong thực tế)
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        // Nếu tìm thấy người dùng, lấy ID và lưu vào session
+        $user = $result->fetch_assoc();
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['manhomquyen'] = $user['manhomquyen'];
+
+        // Chuyển hướng đến trang dashboard
+        header("Location: dashboard.php");
+        exit();
+    } else {
+        $error_message = "Tên đăng nhập hoặc mật khẩu không đúng.";
+    }
 }
 ?>
 
@@ -120,6 +141,7 @@ if ($_SESSION['manhomquyen'] != 10) {
         /* Đẩy footer ra ngoài sidebar */
     }
     </style>
+
 </head>
 
 <body>

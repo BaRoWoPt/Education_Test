@@ -1,16 +1,13 @@
 <?php
-$server = 'localhost';
-$user = 'root';
-$pass = '';
-$database = 'WebThiTracNghiem';
+$servername = "localhost"; // Địa chỉ máy chủ
+$username = "root"; // Tên đăng nhập
+$password = ""; // Mật khẩu
+$dbname = "ten_cua_database"; // Tên cơ sở dữ liệu
 
-// Tạo kết nối đến cơ sở dữ liệu
-$conn = new mysqli($server, $user, $pass, $database);
+// Tạo kết nối
+$conn = new mysqli($servername, $username, $password, $dbname);
 
 // Kiểm tra kết nối
 if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
-
-// Thiết lập mã hóa để làm việc với UTF-8
-$conn->set_charset('utf8');

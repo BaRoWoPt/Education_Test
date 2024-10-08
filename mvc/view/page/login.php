@@ -13,6 +13,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
+session_start(); // Khởi động session
 
 // Xử lý khi form được submit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -31,7 +32,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Kiểm tra mật khẩu
         if (password_verify($password, $row['matkhau'])) {
             // Đăng nhập thành công
-            session_start(); // Khởi động session
             $_SESSION['user_id'] = $row['id']; // Lưu thông tin người dùng vào session
             $_SESSION['manhomquyen'] = $row['manhomquyen']; // Lưu nhóm quyền vào session
 
@@ -54,6 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 

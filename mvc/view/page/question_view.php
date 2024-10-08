@@ -17,11 +17,15 @@ if ($conn->connect_error) {
 session_start();
 $manhomquyen = $_SESSION['manhomquyen'] ?? 0; // Mặc định là 0 nếu không có quyền
 
+$userId = $_SESSION['user_id'];
+// Lấy ID người dùng từ session
+
 // Kiểm tra quyền truy cập
 if ($manhomquyen != 10) {
     echo "Bạn không có quyền truy cập vào danh sách sinh viên.";
     exit; // Ngừng thực thi nếu không có quyền
 }
+
 // Xử lý khi form được gửi
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['edit'])) {
@@ -42,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $do_kho = $do_kho_mapping[$_POST['do_kho']];
 
         // Cập nhật câu hỏi
-        $sql = "UPDATE cauhoi SET mamonhoc='$mamonhoc', noidung='$noidungcauhoi', dokho='$do_kho', machuong='$chuong' WHERE macauhoi='$macauhoi'";
+        $sql = "UPDATE cauhoi SET mamonhoc='$mamonhoc', noidung='$noidungcauhoi', dokho='$do_kho', machuong='$chuong', nguoitao='$userId' WHERE macauhoi='$macauhoi'";
 
         if ($conn->query($sql) === TRUE) {
             // Xóa câu trả lời cũ
@@ -79,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $do_kho = $do_kho_mapping[$_POST['do_kho']];
 
         // Thêm câu hỏi vào cơ sở dữ liệu
-        $sql = "INSERT INTO cauhoi (mamonhoc, noidung, dokho, machuong) VALUES ('$mamonhoc', '$noidungcauhoi', '$do_kho', '$chuong')";
+        $sql = "INSERT INTO cauhoi (mamonhoc, noidung, dokho, machuong, nguoitao) VALUES ('$mamonhoc', '$noidungcauhoi', '$do_kho', '$chuong', '$userId')";
 
         if ($conn->query($sql) === TRUE) {
             $macauhoi = $conn->insert_id; // Lấy ID câu hỏi vừa thêm
@@ -104,6 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $sql = "SELECT mamonhoc, tenmonhoc FROM monhoc";
 $result = $conn->query($sql);
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="vi">
