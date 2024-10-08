@@ -1,3 +1,27 @@
+<?php
+// Kết nối cơ sở dữ liệu
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "WebThiTracNghiem"; // Đặt tên database của bạn
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Kết nối thất bại: " . $conn->connect_error);
+}
+session_start();
+$manhomquyen = $_SESSION['manhomquyen'] ?? 0; // Mặc định là 0 nếu không có quyền
+$userId = $_SESSION['user_id'];
+// Kiểm tra quyền truy cập
+if ($manhomquyen != 10) {
+    echo "Bạn không có quyền truy cập vào danh sách sinh viên.";
+    exit; // Ngừng thực thi nếu không có quyền
+}
+$sql = "SELECT manhom, tennhom FROM nhom WHERE hienthi = 1";
+$result = $conn->query($sql);
+
+?>
+
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -97,44 +121,59 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Thông tin đề thi</h5>
-                                <form>
+                                <form method="POST" action="your_action_page.php">
+                                    <!-- Thay đổi action tương ứng -->
                                     <div class="mb-3">
                                         <label for="tende" class="form-label">Tên đề kiểm tra</label>
-                                        <input type="text" class="form-control" id="tende"
-                                            placeholder="Nhập tên đề kiểm tra">
+                                        <input type="text" class="form-control" id="tende" name="tende"
+                                            placeholder="Nhập tên đề kiểm tra" required>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label for="thoigianbatdau" class="form-label">Thời gian bắt đầu</label>
-                                            <input type="datetime-local" class="form-control" id="thoigianbatdau">
+                                            <input type="datetime-local" class="form-control" id="thoigianbatdau"
+                                                name="thoigianbatdau" required>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label for="thoigianlambai" class="form-label">Thời gian làm bài</label>
                                             <input type="number" class="form-control" id="thoigianlambai"
-                                                placeholder="00" min="0">
+                                                name="thoigianlambai" placeholder="00" min="0" required>
                                         </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="giaochonhom" class="form-label">Giao cho</label>
-                                        <select class="form-select" id="giaochonhom">
-                                            <option selected>Chọn nhóm học phần giảng dạy...</option>
+                                        <select class="form-select" id="giaochonhom" name="giaochonhom" required>
+                                            <option selected disabled>Chọn nhóm học phần giảng dạy...</option>
+                                            <?php
+                                            if ($result->num_rows > 0) {
+                                                while ($row = $result->fetch_assoc()) {
+                                                    echo "<option value='{$row['manhom']}'>{$row['tennhom']}</option>";
+                                                }
+                                            } else {
+                                                echo "<option disabled>Không có nhóm nào</option>";
+                                            }
+                                            ?>
                                         </select>
                                     </div>
                                     <div class="mb-3">
                                         <label for="chuong" class="form-label">Chương</label>
-                                        <select class="form-select" id="chuong" multiple>
-                                            <option selected>Chọn nhiều chương...</option>
+                                        <select class="form-select" id="chuong" name="chuong[]" multiple required>
+                                            <option selected disabled>Chọn nhiều chương...</option>
+                                            <!-- Các chương sẽ được thêm vào đây -->
                                         </select>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-4 mb-3">
-                                            <input type="number" class="form-control" placeholder="Số câu dễ">
+                                            <input type="number" class="form-control" name="socau_de"
+                                                placeholder="Số câu dễ" min='0' required>
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <input type="number" class="form-control" placeholder="Số câu trung bình">
+                                            <input type="number" class="form-control" name="socau_tb"
+                                                placeholder="Số câu trung bình" min='0' required>
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <input type="number" class="form-control" placeholder="Số câu khó">
+                                            <input type="number" class="form-control" name="socau_kho"
+                                                placeholder="Số câu khó" min='0' required>
                                         </div>
                                     </div>
                                     <button type="submit" class="btn btn-primary">+ TẠO ĐỀ</button>
@@ -149,29 +188,24 @@
                             <h5 class="card-title">Cấu hình</h5>
                             <form>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="autobank">
+                                    <input class="form-check-input" type="checkbox" id="autobank" name="autobank">
                                     <label class="form-check-label" for="autobank">Tự động lấy từ ngân hàng đề</label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="xemdiem">
+                                    <input class="form-check-input" type="checkbox" id="xemdiem" name="xemdiem">
                                     <label class="form-check-label" for="xemdiem">Xem điểm sau khi thi xong</label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="xembailam">
+                                    <input class="form-check-input" type="checkbox" id="xembailam" name="xembailam">
                                     <label class="form-check-label" for="xembailam">Xem bài làm khi thi xong</label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="daocauhoi">
+                                    <input class="form-check-input" type="checkbox" id="daocauhoi" name="daocauhoi">
                                     <label class="form-check-label" for="daocauhoi">Đảo câu hỏi</label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="daodapan">
+                                    <input class="form-check-input" type="checkbox" id="daodapan" name="daodapan">
                                     <label class="form-check-label" for="daodapan">Đảo đáp án</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="nopbaitab">
-                                    <label class="form-check-label" for="nopbaitab">Tự động nộp bài khi chuyển
-                                        tab</label>
                                 </div>
                             </form>
                         </div>
@@ -180,9 +214,31 @@
             </main>
         </div>
     </div>
+    <script>
+    document.getElementById('giaochonhom').addEventListener('change', function() {
+        var manhom = this.value;
 
-    <!-- Thêm Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        // Gửi yêu cầu AJAX để lấy danh sách chương
+        fetch('get_chapters.php?manhom=' + manhom)
+            .then(response => response.json())
+            .then(data => {
+                var chuongSelect = document.getElementById('chuong');
+                chuongSelect.innerHTML = ''; // Xóa các option hiện tại
+
+                // Thêm các chương vào dropdown
+                data.forEach(function(machuong) {
+                    var option = document.createElement('option');
+                    option.value = machuong;
+                    option.textContent = 'Chương ' + machuong;
+                    chuongSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
 
 </html>
