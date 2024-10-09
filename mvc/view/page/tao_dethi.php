@@ -20,6 +20,8 @@ if ($manhomquyen != 10) {
 $sql = "SELECT manhom, tennhom FROM nhom WHERE hienthi = 1";
 $result = $conn->query($sql);
 
+$userId = $_SESSION['user_id'];
+// Lấy ID người dùng từ session
 ?>
 
 <!DOCTYPE html>
@@ -48,6 +50,10 @@ $result = $conn->query($sql);
         color: white;
         padding-top: 20px;
         transition: width 0.3s;
+    }
+
+    .text_row {
+        font-size: 14px;
     }
 
     .sidebar h2 {
@@ -121,7 +127,7 @@ $result = $conn->query($sql);
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Thông tin đề thi</h5>
-                                <form method="POST" action="your_action_page.php">
+                                <form method="POST" action="create_exam.php">
                                     <!-- Thay đổi action tương ứng -->
                                     <div class="mb-3">
                                         <label for="tende" class="form-label">Tên đề kiểm tra</label>
@@ -154,28 +160,38 @@ $result = $conn->query($sql);
                                             }
                                             ?>
                                         </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="chuong" class="form-label">Chương</label>
-                                        <select class="form-select" id="chuong" name="chuong[]" multiple required>
-                                            <option selected disabled>Chọn nhiều chương...</option>
-                                            <!-- Các chương sẽ được thêm vào đây -->
-                                        </select>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4 mb-3">
-                                            <input type="number" class="form-control" name="socau_de"
-                                                placeholder="Số câu dễ" min='0' required>
+
+                                        <div class="mb-3">
+                                            <label for="chuong" class="form-label">Chương</label>
+                                            <div id="chuongContainer">
+                                                <!-- Các chương sẽ được thêm vào đây dưới dạng checkbox -->
+                                            </div>
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <input type="number" class="form-control" name="socau_tb"
-                                                placeholder="Số câu trung bình" min='0' required>
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label class="text_row" id="totalEasyLabel">Số câu dễ có thể chọn:
+                                                    0</label>
+                                                <input type="number" class="form-control" name="socau_de"
+                                                    placeholder="Số câu dễ" min='0' max='0' required>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="text_row" id="totalMediumLabel">Số câu trung bình có thể
+                                                    chọn:
+                                                    0</label>
+                                                <input type="number" class="form-control" name="socau_tb"
+                                                    placeholder="Số câu trung bình" min='0' max='0' required>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="text_row" id="totalHardLabel">Số câu khó có thể chọn:
+                                                    0</label>
+                                                <input type="number" class="form-control" name="socau_kho"
+                                                    placeholder="Số câu khó" min='0' max='0' required>
+                                            </div>
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <input type="number" class="form-control" name="socau_kho"
-                                                placeholder="Số câu khó" min='0' required>
-                                        </div>
+                                        <input type="hidden" id="mamonhoc" name="mamonhoc" value="">
+
                                     </div>
+
                                     <button type="submit" class="btn btn-primary">+ TẠO ĐỀ</button>
                                 </form>
                             </div>
@@ -216,24 +232,132 @@ $result = $conn->query($sql);
     </div>
     <script>
     document.getElementById('giaochonhom').addEventListener('change', function() {
-        var manhom = this.value;
+        var manhom = this.value; // Lấy giá trị manhom đã chọn
 
-        // Gửi yêu cầu AJAX để lấy danh sách chương
-        fetch('get_chapters.php?manhom=' + manhom)
-            .then(response => response.json())
-            .then(data => {
-                var chuongSelect = document.getElementById('chuong');
-                chuongSelect.innerHTML = ''; // Xóa các option hiện tại
-
-                // Thêm các chương vào dropdown
-                data.forEach(function(machuong) {
-                    var option = document.createElement('option');
-                    option.value = machuong;
-                    option.textContent = 'Chương ' + machuong;
-                    chuongSelect.appendChild(option);
-                });
+        // Gửi yêu cầu AJAX để lấy mamonhoc và tenmonhoc
+        fetch('get_monhoc.php?manhom=' + manhom)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
             })
-            .catch(error => console.error('Error:', error));
+            .then(data => {
+                // Kiểm tra lỗi từ server
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    alert(data.error); // Thông báo lỗi cho người dùng
+                    return; // Kết thúc nếu có lỗi
+                }
+
+                // Kiểm tra và lấy mamonhoc
+                var mamonhoc = data.mamonhoc;
+                if (mamonhoc !== undefined && mamonhoc !== null) {
+                    console.log('Mã môn học:', mamonhoc);
+
+                    // Cập nhật giá trị cho input hidden
+                    document.getElementById('mamonhoc').value = mamonhoc;
+
+                    // Gửi yêu cầu AJAX để lấy danh sách chương
+                    fetch('get_chapters.php?manhom=' + manhom)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            var chuongContainer = document.getElementById('chuongContainer');
+                            chuongContainer.innerHTML = ''; // Xóa các checkbox hiện tại
+
+                            // Kiểm tra dữ liệu chương
+                            if (Array.isArray(data) && data.length > 0) {
+                                // Thêm các chương vào danh sách checkbox
+                                data.forEach(function(machuong) {
+                                    var checkbox = document.createElement('div');
+                                    checkbox.className = 'form-check';
+
+                                    var input = document.createElement('input');
+                                    input.type = 'checkbox';
+                                    input.className = 'form-check-input';
+                                    input.value = machuong;
+                                    input.id = 'chuong_' + machuong;
+
+                                    var label = document.createElement('label');
+                                    label.className = 'form-check-label';
+                                    label.htmlFor = 'chuong_' + machuong;
+                                    label.textContent = 'Chương ' + machuong;
+
+                                    checkbox.appendChild(input);
+                                    checkbox.appendChild(label);
+                                    chuongContainer.appendChild(checkbox);
+                                });
+                            } else {
+                                console.warn('Không có chương nào để hiển thị.');
+                                chuongContainer.innerHTML = '<p>Không có chương nào để hiển thị.</p>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching chapters:', error);
+                            alert(
+                            'Có lỗi xảy ra khi lấy danh sách chương.'); // Thông báo lỗi cho người dùng
+                        });
+                } else {
+                    console.error('Mã môn học không hợp lệ');
+                    alert('Không tìm thấy mã môn học.'); // Thông báo cho người dùng
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching môn học:', error);
+                alert('Có lỗi xảy ra khi lấy mã môn học.'); // Thông báo lỗi cho người dùng
+            });
+    });
+
+    document.getElementById('chuongContainer').addEventListener('change', function(e) {
+        // Tạo biến để lưu trữ tổng số câu hỏi
+        let totalEasy = 0;
+        let totalMedium = 0;
+        let totalHard = 0;
+
+        // Lấy tất cả các checkbox đã chọn
+        const checkboxes = document.querySelectorAll('#chuongContainer input[type="checkbox"]:checked');
+
+        // Nếu không có checkbox nào được chọn, thoát
+        if (checkboxes.length === 0) {
+            document.querySelector('input[name="socau_de"]').value = 0;
+            document.querySelector('input[name="socau_tb"]').value = 0;
+            document.querySelector('input[name="socau_kho"]').value = 0;
+            return;
+        }
+
+        // Gửi yêu cầu AJAX cho từng chương đã chọn
+        const promises = Array.from(checkboxes).map(checkbox => {
+            var machuong = checkbox.value;
+
+            return fetch('get_question_count.php?machuong=' + machuong)
+                .then(response => response.json())
+                .then(data => {
+                    // Cộng dồn số lượng câu hỏi theo độ khó
+                    totalEasy += data.so_cau_de;
+                    totalMedium += data.so_cau_tb;
+                    totalHard += data.so_cau_kho;
+                });
+        });
+
+        // Sau khi tất cả các yêu cầu hoàn thành, cập nhật giao diện
+        Promise.all(promises).then(() => {
+            // Cập nhật tổng số câu có thể chọn lên các label
+            document.getElementById('totalEasyLabel').innerText = 'Số câu dễ có thể chọn: ' + totalEasy;
+            document.getElementById('totalMediumLabel').innerText = 'Số câu trung bình có thể chọn: ' +
+                totalMedium;
+            document.getElementById('totalHardLabel').innerText = 'Số câu khó có thể chọn: ' +
+                totalHard;
+
+            // Cập nhật giá trị cho các trường nhập liệu
+            document.querySelector('input[name="socau_de"]').max = totalEasy;
+            document.querySelector('input[name="socau_tb"]').max = totalMedium;
+            document.querySelector('input[name="socau_kho"]').max = totalHard;
+        }).catch(error => console.error('Error:', error));
     });
     </script>
 
