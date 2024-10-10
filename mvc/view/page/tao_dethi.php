@@ -300,7 +300,8 @@ $userId = $_SESSION['user_id'];
                         .catch(error => {
                             console.error('Error fetching chapters:', error);
                             alert(
-                            'Có lỗi xảy ra khi lấy danh sách chương.'); // Thông báo lỗi cho người dùng
+                                'Có lỗi xảy ra khi lấy danh sách chương.'
+                            ); // Thông báo lỗi cho người dùng
                         });
                 } else {
                     console.error('Mã môn học không hợp lệ');
