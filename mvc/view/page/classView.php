@@ -136,62 +136,62 @@ $result = mysqli_query($conn, $query);
     <link rel="icon" href="/mvc/view/img/68e129217733aa0645b48e7c154d2303-_1_.svg" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-    body {
-        font-family: 'Inter', sans-serif;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
 
-    .sidebar {
-        height: 100vh;
-        width: 250px;
-        background-color: #a12c2f;
-        position: fixed;
-        color: white;
-        padding-top: 20px;
-    }
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            background-color: #a12c2f;
+            position: fixed;
+            color: white;
+            padding-top: 20px;
+        }
 
-    .sidebar a:hover {
-        background-color: #921e24;
-    }
+        .sidebar a:hover {
+            background-color: #921e24;
+        }
 
 
-    .sidebar h2 {
-        text-align: center;
-        font-weight: bold;
-        color: white;
-    }
+        .sidebar h2 {
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
 
-    .menu-section {
-        margin-bottom: 20px;
-        margin-top: 60px;
-    }
+        .menu-section {
+            margin-bottom: 20px;
+            margin-top: 60px;
+        }
 
-    .menu-section h3 {
-        font-size: 16px;
-        text-transform: uppercase;
-        margin-left: 20px;
-        margin-bottom: 10px;
-        color: #FFD700;
-    }
+        .menu-section h3 {
+            font-size: 16px;
+            text-transform: uppercase;
+            margin-left: 20px;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
 
-    .sidebar a {
-        display: block;
-        padding: 10px 20px;
-        color: white;
-        text-decoration: none;
-        font-size: 18px;
-    }
+        .sidebar a {
+            display: block;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
 
-    .content {
-        margin-left: 250px;
-        padding: 20px;
-    }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
 
-    .btn-primary,
-    .btn-info {
-        background-color: #821131;
-        color: #FFD700;
-        border: none;
-    }
+        .btn-primary,
+        .btn-info {
+            background-color: #821131;
+            color: #FFD700;
+            border: none;
+        }
     </style>
 </head>
 
@@ -207,7 +207,7 @@ $result = mysqli_query($conn, $query);
                     <a href="../page/classView.php">Nhóm học phần</a>
                     <a href="../page/question_view.php">Câu hỏi</a>
                     <a href="../page/learning.php">Môn học</a>
-                    <a href="#">Đề kiểm tra</a>
+                    <a href="../page/tao_dethi.php">Đề kiểm tra</a>
                     <a href="#">Thông báo</a>
                 </div>
 
@@ -220,11 +220,11 @@ $result = mysqli_query($conn, $query);
             <div class="col-md-10 content">
                 <h4>Danh Sách Nhóm Học Phần</h4>
                 <?php if (isset($_SESSION['delete_message'])) : ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <?php echo $_SESSION['delete_message']; ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php unset($_SESSION['delete_message']); // Xóa thông báo sau khi hiển thị 
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <?php echo $_SESSION['delete_message']; ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <?php unset($_SESSION['delete_message']); // Xóa thông báo sau khi hiển thị 
                     ?>
                 <?php endif; ?>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGroupModal">+ Thêm
@@ -243,18 +243,18 @@ $result = mysqli_query($conn, $query);
                     </thead>
                     <tbody>
                         <?php while ($group = $groupsResult->fetch_assoc()) : ?>
-                        <tr>
-                            <td><?php echo $group['manhom']; ?></td>
-                            <td><?php echo $group['tennhom']; ?></td>
-                            <td><?php echo $group['siso']; ?></td>
-                            <td><?php echo $group['giangvien']; ?></td>
-                            <td><?php echo $group['mamonhoc']; ?></td>
-                            <td>
-                                <!-- Thay thế nút modal bằng thẻ <a> -->
-                                <a href="view_students.php?manhom=<?php echo $group['manhom']; ?>"
-                                    class="btn btn-primary">Xem sinh viên</a>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td><?php echo $group['manhom']; ?></td>
+                                <td><?php echo $group['tennhom']; ?></td>
+                                <td><?php echo $group['siso']; ?></td>
+                                <td><?php echo $group['giangvien']; ?></td>
+                                <td><?php echo $group['mamonhoc']; ?></td>
+                                <td>
+                                    <!-- Thay thế nút modal bằng thẻ <a> -->
+                                    <a href="view_students.php?manhom=<?php echo $group['manhom']; ?>"
+                                        class="btn btn-primary">Xem sinh viên</a>
+                                </td>
+                            </tr>
                         <?php endwhile; ?>
                     </tbody>
                 </table>
@@ -264,9 +264,9 @@ $result = mysqli_query($conn, $query);
                 <nav>
                     <ul class="pagination">
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
-                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                        </li>
+                            <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
+                                <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                            </li>
                         <?php endfor; ?>
                     </ul>
                 </nav>
@@ -302,8 +302,8 @@ $result = mysqli_query($conn, $query);
                             <select class="form-select" id="giangvien" name="giangvien" required>
                                 <option value="">Chọn giảng viên</option>
                                 <?php foreach ($giangViens as $giangVien): ?>
-                                <option value="<?php echo $giangVien['id']; ?>"><?php echo $giangVien['hoten']; ?>
-                                </option>
+                                    <option value="<?php echo $giangVien['id']; ?>"><?php echo $giangVien['hoten']; ?>
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -312,8 +312,8 @@ $result = mysqli_query($conn, $query);
                             <select class="form-select" id="mamonhoc" name="mamonhoc" required>
                                 <option value="">Chọn mã môn học</option>
                                 <?php foreach ($maMons as $maMon): ?>
-                                <option value="<?php echo $maMon['mamonhoc']; ?>"><?php echo $maMon['mamonhoc']; ?>
-                                </option>
+                                    <option value="<?php echo $maMon['mamonhoc']; ?>"><?php echo $maMon['mamonhoc']; ?>
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -321,8 +321,8 @@ $result = mysqli_query($conn, $query);
                             <label for="students" class="form-label">Chọn Sinh Viên</label>
                             <select multiple class="form-select" id="students" name="students[]" required>
                                 <?php foreach ($sinhViens as $sinhVien): ?>
-                                <option value="<?php echo $sinhVien['id']; ?>"><?php echo $sinhVien['hoten']; ?>
-                                </option>
+                                    <option value="<?php echo $sinhVien['id']; ?>"><?php echo $sinhVien['hoten']; ?>
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -337,40 +337,40 @@ $result = mysqli_query($conn, $query);
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // Nạp danh sách sinh viên vào modal khi nhấn nút "Xem Sinh Viên"
-    document.addEventListener('DOMContentLoaded', function() {
-        var viewStudentsButtons = document.querySelectorAll('[data-bs-target="#viewStudentsModal"]');
+        // Nạp danh sách sinh viên vào modal khi nhấn nút "Xem Sinh Viên"
+        document.addEventListener('DOMContentLoaded', function() {
+            var viewStudentsButtons = document.querySelectorAll('[data-bs-target="#viewStudentsModal"]');
 
-        viewStudentsButtons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                var manhom = button.getAttribute('data-manhom');
-                var studentListBody = document.getElementById('studentListBody');
+            viewStudentsButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var manhom = button.getAttribute('data-manhom');
+                    var studentListBody = document.getElementById('studentListBody');
 
-                // Xóa nội dung cũ
-                studentListBody.innerHTML = '';
+                    // Xóa nội dung cũ
+                    studentListBody.innerHTML = '';
 
-                // Gửi yêu cầu AJAX để lấy danh sách sinh viên trong nhóm
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', 'get_students.php?manhom=' + manhom, true);
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        var students = JSON.parse(xhr.responseText);
-                        students.forEach(function(student) {
-                            var row = document.createElement('tr');
-                            row.innerHTML = '<td>' + student.hoten + '</td>' +
-                                '<td><form method="POST" action=""><input type="hidden" name="manhom" value="' +
-                                manhom + '">' +
-                                '<input type="hidden" name="manguoidung" value="' +
-                                student.id + '">' +
-                                '<button type="submit" name="action" value="delete_student" class="btn btn-danger">Xóa</button></form></td>';
-                            studentListBody.appendChild(row);
-                        });
-                    }
-                };
-                xhr.send();
+                    // Gửi yêu cầu AJAX để lấy danh sách sinh viên trong nhóm
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', 'get_students.php?manhom=' + manhom, true);
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            var students = JSON.parse(xhr.responseText);
+                            students.forEach(function(student) {
+                                var row = document.createElement('tr');
+                                row.innerHTML = '<td>' + student.hoten + '</td>' +
+                                    '<td><form method="POST" action=""><input type="hidden" name="manhom" value="' +
+                                    manhom + '">' +
+                                    '<input type="hidden" name="manguoidung" value="' +
+                                    student.id + '">' +
+                                    '<button type="submit" name="action" value="delete_student" class="btn btn-danger">Xóa</button></form></td>';
+                                studentListBody.appendChild(row);
+                            });
+                        }
+                    };
+                    xhr.send();
+                });
             });
         });
-    });
     </script>
 </body>
 

@@ -35,6 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($conn->query($sql) === TRUE) {
         echo "Tạo đề kiểm tra thành công!";
+        header("Location: tao_dethi.php");
+        exit(); // Ngăn chặn việc thực hiện thêm mã sau khi chuyển hướng
     } else {
         echo "Lỗi: " . $sql . "<br>" . $conn->error;
     }

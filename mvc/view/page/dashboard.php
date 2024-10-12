@@ -43,103 +43,103 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-    body {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        font-family: 'Roboto', sans-serif;
-        margin: 0;
-        padding: 0;
-    }
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
-    .sidebar {
-        height: 100vh;
-        width: 250px;
-        background-color: #a12c2f;
-        position: fixed;
-        top: 0;
-        left: 0;
-        color: white;
-        padding-top: 20px;
-    }
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            background-color: #a12c2f;
+            position: fixed;
+            top: 0;
+            left: 0;
+            color: white;
+            padding-top: 20px;
+        }
 
-    .sidebar h2 {
-        text-align: center;
-        font-weight: bold;
-        color: white;
-    }
+        .sidebar h2 {
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
 
-    .sidebar a {
-        display: block;
-        padding: 10px 20px;
-        color: white;
-        text-decoration: none;
-        font-size: 18px;
-    }
+        .sidebar a {
+            display: block;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
 
-    .sidebar a:hover {
-        background-color: #921e24;
-    }
+        .sidebar a:hover {
+            background-color: #921e24;
+        }
 
-    .menu-section {
-        margin-bottom: 20px;
-        margin-top: 60px;
-    }
+        .menu-section {
+            margin-bottom: 20px;
+            margin-top: 60px;
+        }
 
-    .menu-section h3 {
-        font-size: 16px;
-        text-transform: uppercase;
-        margin-left: 20px;
-        margin-bottom: 10px;
-        color: #FFD700;
-    }
+        .menu-section h3 {
+            font-size: 16px;
+            text-transform: uppercase;
+            margin-left: 20px;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
 
 
 
-    .content {
-        margin-left: 250px;
-        padding: 20px;
-    }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
 
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px;
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #ddd;
-    }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
 
-    .header h1 {
-        color: #a12c2f;
-        font-weight: bold;
-    }
+        .header h1 {
+            color: #a12c2f;
+            font-weight: bold;
+        }
 
-    .header .logout {
-        background-color: #a12c2f;
-        color: white;
-        padding: 10px 20px;
-        text-decoration: none;
-        border-radius: 5px;
-    }
+        .header .logout {
+            background-color: #a12c2f;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
 
-    .header .logout:hover {
-        background-color: #921e24;
-    }
+        .header .logout:hover {
+            background-color: #921e24;
+        }
 
-    .main-content {
-        margin-top: 20px;
-    }
+        .main-content {
+            margin-top: 20px;
+        }
 
-    footer {
-        text-align: center;
-        padding: 10px;
-        background-color: #f8f9fa;
-        color: #a12c2f;
-        position: fixed;
-        width: 100%;
-        bottom: 0;
-        left: 250px;
-        /* Đẩy footer ra ngoài sidebar */
-    }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            color: #a12c2f;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 250px;
+            /* Đẩy footer ra ngoài sidebar */
+        }
     </style>
 
 </head>
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a href="../page/classView.php">Nhóm học phần</a>
             <a href="../page/question_view.php">Câu hỏi</a>
             <a href="../page/learning.php">Môn học</a>
-            <a href="#">Đề kiểm tra</a>
+            <a href="../page/tao_dethi.php">Đề kiểm tra</a>
             <a href="#">Thông báo</a>
         </div>
 
