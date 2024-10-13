@@ -38,63 +38,63 @@ $userId = $_SESSION['user_id'];
     <link rel="icon" href="/mvc/view/img/68e129217733aa0645b48e7c154d2303-_1_.svg" type="image/x-icon">
 
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
+    body {
+        background-color: #f8f9fa;
+    }
 
-        .sidebar {
-            height: 100vh;
-            width: 250px;
-            background-color: #a12c2f;
-            position: fixed;
-            top: 0;
-            left: 0;
-            color: white;
-            padding-top: 20px;
-            transition: width 0.3s;
-        }
+    .sidebar {
+        height: 100vh;
+        width: 250px;
+        background-color: #a12c2f;
+        position: fixed;
+        top: 0;
+        left: 0;
+        color: white;
+        padding-top: 20px;
+        transition: width 0.3s;
+    }
 
-        .text_row {
-            font-size: 14px;
-        }
+    .text_row {
+        font-size: 14px;
+    }
 
-        .sidebar h2 {
-            text-align: center;
-            font-weight: bold;
-            color: white;
-        }
+    .sidebar h2 {
+        text-align: center;
+        font-weight: bold;
+        color: white;
+    }
 
-        .sidebar a {
-            display: block;
-            padding: 10px 20px;
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-        }
+    .sidebar a {
+        display: block;
+        padding: 10px 20px;
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+    }
 
-        .sidebar a:hover {
-            background-color: #921e24;
-        }
+    .sidebar a:hover {
+        background-color: #921e24;
+    }
 
-        .menu-section {
-            margin-bottom: 20px;
-            margin-top: 60px;
-        }
+    .menu-section {
+        margin-bottom: 20px;
+        margin-top: 60px;
+    }
 
-        .menu-section h3 {
-            font-size: 16px;
-            text-transform: uppercase;
-            margin-left: 20px;
-            margin-bottom: 10px;
-            color: #FFD700;
-        }
+    .menu-section h3 {
+        font-size: 16px;
+        text-transform: uppercase;
+        margin-left: 20px;
+        margin-bottom: 10px;
+        color: #FFD700;
+    }
 
-        .config-container {
-            background-color: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+    .config-container {
+        background-color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
     </style>
 </head>
 
@@ -233,135 +233,135 @@ $userId = $_SESSION['user_id'];
         </div>
     </div>
     <script>
-        document.getElementById('giaochonhom').addEventListener('change', function() {
-            var manhom = this.value; // Lấy giá trị manhom đã chọn
+    document.getElementById('giaochonhom').addEventListener('change', function() {
+        var manhom = this.value; // Lấy giá trị manhom đã chọn
 
-            // Gửi yêu cầu AJAX để lấy mamonhoc và tenmonhoc
-            fetch('get_monhoc.php?manhom=' + manhom)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
+        // Gửi yêu cầu AJAX để lấy mamonhoc và tenmonhoc
+        fetch('get_monhoc.php?manhom=' + manhom)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Kiểm tra lỗi từ server
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    alert(data.error); // Thông báo lỗi cho người dùng
+                    return; // Kết thúc nếu có lỗi
+                }
+
+                // Kiểm tra và lấy mamonhoc
+                var mamonhoc = data.mamonhoc;
+                if (mamonhoc !== undefined && mamonhoc !== null) {
+                    console.log('Mã môn học:', mamonhoc);
+
+                    // Cập nhật giá trị cho input hidden
+                    document.getElementById('mamonhoc').value = mamonhoc;
+
+                    // Gửi yêu cầu AJAX để lấy danh sách chương
+                    fetch('get_chapters.php?manhom=' + manhom)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            var chuongContainer = document.getElementById('chuongContainer');
+                            chuongContainer.innerHTML = ''; // Xóa các checkbox hiện tại
+
+                            // Kiểm tra dữ liệu chương
+                            if (Array.isArray(data) && data.length > 0) {
+                                // Thêm các chương vào danh sách checkbox
+                                data.forEach(function(machuong) {
+                                    var checkbox = document.createElement('div');
+                                    checkbox.className = 'form-check';
+
+                                    var input = document.createElement('input');
+                                    input.type = 'checkbox';
+                                    input.className = 'form-check-input';
+                                    input.value = machuong;
+                                    input.id = 'chuong_' + machuong;
+
+                                    var label = document.createElement('label');
+                                    label.className = 'form-check-label';
+                                    label.htmlFor = 'chuong_' + machuong;
+                                    label.textContent = 'Chương ' + machuong;
+
+                                    checkbox.appendChild(input);
+                                    checkbox.appendChild(label);
+                                    chuongContainer.appendChild(checkbox);
+                                });
+                            } else {
+                                console.warn('Không có chương nào để hiển thị.');
+                                chuongContainer.innerHTML = '<p>Không có chương nào để hiển thị.</p>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching chapters:', error);
+                            alert(
+                                'Có lỗi xảy ra khi lấy danh sách chương.'
+                            ); // Thông báo lỗi cho người dùng
+                        });
+                } else {
+                    console.error('Mã môn học không hợp lệ');
+                    alert('Không tìm thấy mã môn học.'); // Thông báo cho người dùng
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching môn học:', error);
+                alert('Có lỗi xảy ra khi lấy mã môn học.'); // Thông báo lỗi cho người dùng
+            });
+    });
+
+    document.getElementById('chuongContainer').addEventListener('change', function(e) {
+        // Tạo biến để lưu trữ tổng số câu hỏi
+        let totalEasy = 0;
+        let totalMedium = 0;
+        let totalHard = 0;
+
+        // Lấy tất cả các checkbox đã chọn
+        const checkboxes = document.querySelectorAll('#chuongContainer input[type="checkbox"]:checked');
+
+        // Nếu không có checkbox nào được chọn, thoát
+        if (checkboxes.length === 0) {
+            document.querySelector('input[name="socau_de"]').value = 0;
+            document.querySelector('input[name="socau_tb"]').value = 0;
+            document.querySelector('input[name="socau_kho"]').value = 0;
+            return;
+        }
+
+        // Gửi yêu cầu AJAX cho từng chương đã chọn
+        const promises = Array.from(checkboxes).map(checkbox => {
+            var machuong = checkbox.value;
+
+            return fetch('get_question_count.php?machuong=' + machuong)
+                .then(response => response.json())
                 .then(data => {
-                    // Kiểm tra lỗi từ server
-                    if (data.error) {
-                        console.error('Error:', data.error);
-                        alert(data.error); // Thông báo lỗi cho người dùng
-                        return; // Kết thúc nếu có lỗi
-                    }
-
-                    // Kiểm tra và lấy mamonhoc
-                    var mamonhoc = data.mamonhoc;
-                    if (mamonhoc !== undefined && mamonhoc !== null) {
-                        console.log('Mã môn học:', mamonhoc);
-
-                        // Cập nhật giá trị cho input hidden
-                        document.getElementById('mamonhoc').value = mamonhoc;
-
-                        // Gửi yêu cầu AJAX để lấy danh sách chương
-                        fetch('get_chapters.php?manhom=' + manhom)
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Network response was not ok');
-                                }
-                                return response.json();
-                            })
-                            .then(data => {
-                                var chuongContainer = document.getElementById('chuongContainer');
-                                chuongContainer.innerHTML = ''; // Xóa các checkbox hiện tại
-
-                                // Kiểm tra dữ liệu chương
-                                if (Array.isArray(data) && data.length > 0) {
-                                    // Thêm các chương vào danh sách checkbox
-                                    data.forEach(function(machuong) {
-                                        var checkbox = document.createElement('div');
-                                        checkbox.className = 'form-check';
-
-                                        var input = document.createElement('input');
-                                        input.type = 'checkbox';
-                                        input.className = 'form-check-input';
-                                        input.value = machuong;
-                                        input.id = 'chuong_' + machuong;
-
-                                        var label = document.createElement('label');
-                                        label.className = 'form-check-label';
-                                        label.htmlFor = 'chuong_' + machuong;
-                                        label.textContent = 'Chương ' + machuong;
-
-                                        checkbox.appendChild(input);
-                                        checkbox.appendChild(label);
-                                        chuongContainer.appendChild(checkbox);
-                                    });
-                                } else {
-                                    console.warn('Không có chương nào để hiển thị.');
-                                    chuongContainer.innerHTML = '<p>Không có chương nào để hiển thị.</p>';
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error fetching chapters:', error);
-                                alert(
-                                    'Có lỗi xảy ra khi lấy danh sách chương.'
-                                ); // Thông báo lỗi cho người dùng
-                            });
-                    } else {
-                        console.error('Mã môn học không hợp lệ');
-                        alert('Không tìm thấy mã môn học.'); // Thông báo cho người dùng
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching môn học:', error);
-                    alert('Có lỗi xảy ra khi lấy mã môn học.'); // Thông báo lỗi cho người dùng
+                    // Cộng dồn số lượng câu hỏi theo độ khó
+                    totalEasy += data.so_cau_de;
+                    totalMedium += data.so_cau_tb;
+                    totalHard += data.so_cau_kho;
                 });
         });
 
-        document.getElementById('chuongContainer').addEventListener('change', function(e) {
-            // Tạo biến để lưu trữ tổng số câu hỏi
-            let totalEasy = 0;
-            let totalMedium = 0;
-            let totalHard = 0;
+        // Sau khi tất cả các yêu cầu hoàn thành, cập nhật giao diện
+        Promise.all(promises).then(() => {
+            // Cập nhật tổng số câu có thể chọn lên các label
+            document.getElementById('totalEasyLabel').innerText = 'Số câu dễ có thể chọn: ' + totalEasy;
+            document.getElementById('totalMediumLabel').innerText = 'Số câu trung bình có thể chọn: ' +
+                totalMedium;
+            document.getElementById('totalHardLabel').innerText = 'Số câu khó có thể chọn: ' +
+                totalHard;
 
-            // Lấy tất cả các checkbox đã chọn
-            const checkboxes = document.querySelectorAll('#chuongContainer input[type="checkbox"]:checked');
-
-            // Nếu không có checkbox nào được chọn, thoát
-            if (checkboxes.length === 0) {
-                document.querySelector('input[name="socau_de"]').value = 0;
-                document.querySelector('input[name="socau_tb"]').value = 0;
-                document.querySelector('input[name="socau_kho"]').value = 0;
-                return;
-            }
-
-            // Gửi yêu cầu AJAX cho từng chương đã chọn
-            const promises = Array.from(checkboxes).map(checkbox => {
-                var machuong = checkbox.value;
-
-                return fetch('get_question_count.php?machuong=' + machuong)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Cộng dồn số lượng câu hỏi theo độ khó
-                        totalEasy += data.so_cau_de;
-                        totalMedium += data.so_cau_tb;
-                        totalHard += data.so_cau_kho;
-                    });
-            });
-
-            // Sau khi tất cả các yêu cầu hoàn thành, cập nhật giao diện
-            Promise.all(promises).then(() => {
-                // Cập nhật tổng số câu có thể chọn lên các label
-                document.getElementById('totalEasyLabel').innerText = 'Số câu dễ có thể chọn: ' + totalEasy;
-                document.getElementById('totalMediumLabel').innerText = 'Số câu trung bình có thể chọn: ' +
-                    totalMedium;
-                document.getElementById('totalHardLabel').innerText = 'Số câu khó có thể chọn: ' +
-                    totalHard;
-
-                // Cập nhật giá trị cho các trường nhập liệu
-                document.querySelector('input[name="socau_de"]').max = totalEasy;
-                document.querySelector('input[name="socau_tb"]').max = totalMedium;
-                document.querySelector('input[name="socau_kho"]').max = totalHard;
-            }).catch(error => console.error('Error:', error));
-        });
+            // Cập nhật giá trị cho các trường nhập liệu
+            document.querySelector('input[name="socau_de"]').max = totalEasy;
+            document.querySelector('input[name="socau_tb"]').max = totalMedium;
+            document.querySelector('input[name="socau_kho"]').max = totalHard;
+        }).catch(error => console.error('Error:', error));
+    });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

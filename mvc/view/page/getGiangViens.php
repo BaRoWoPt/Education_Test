@@ -1,8 +1,19 @@
 <?php
 // getGiangViens.php
 
-include 'connect.php'; // Bao gồm file kết nối cơ sở dữ liệu
+$server = 'localhost';
+$user = 'root';
+$pass = '';
+$database = 'WebThiTracNghiem';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+// Tạo kết nối đến cơ sở dữ liệu
+$conn = new mysqli($server, $user, $pass, $database);
 
+// Kiểm tra kết nối
+if ($conn->connect_error) {
+    die("Kết nối thất bại: " . $conn->connect_error);
+}
 // Hàm lấy danh sách giảng viên
 function getGiangViens($conn)
 {

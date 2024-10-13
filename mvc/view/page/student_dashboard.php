@@ -29,6 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $error_message = "Tên đăng nhập hoặc mật khẩu không đúng.";
     }
+    session_start();
+    $manhomquyen = $_SESSION['manhomquyen'] ?? 0; // Mặc định là 0 nếu không có quyền
+    $userId = $_SESSION['user_id'];
+    // Kiểm tra quyền truy cập
+    if ($manhomquyen != 11) {
+        echo "Bạn không có quyền truy cập vào danh sách sinh viên.";
+        exit; // Ngừng thực thi nếu không có quyền
+    }
 }
 ?>
 
@@ -151,8 +159,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="menu-section">
             <h3>Quản lý</h3>
-            <a href="#">Tổng quan</a>
-            <a href="#">Đăng kí nhóm học phần</a>
+            <a href="../page/student_dashboard.php">Tổng quan</a>
+            <a href="../page/dk_nhom.php">Đăng ký nhóm học phần</a>
+            <a href="../page/Test_list.php">Kiểm tra</a>
 
         </div>
 

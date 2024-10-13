@@ -11,9 +11,13 @@ if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
 session_start();
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+$manhomquyen = $_SESSION['manhomquyen'] ?? 0; // Mặc định là 0 nếu không có quyền
+$userId = $_SESSION['user_id'];
+// Kiểm tra quyền truy cập
+if ($manhomquyen != 11) {
+    header("Location: login.php");
+    exit; // Ngừng thực thi nếu không có quyền
+}
 // Kiểm tra xem người dùng đã đăng nhập chưa
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -27,16 +31,16 @@ $userId = $_SESSION['user_id'];
 if (isset($_GET['manhom'])) {
     $manhom = $_GET['manhom'];
 
-    // Kiểm tra sĩ số của nhóm
-    $sql_check = "SELECT siso, (SELECT COUNT(*) FROM chitietnhom WHERE manhom = ?) as soluong_sinhvien 
-                  FROM nhom WHERE manhom = ?";
+    // Kiểm tra xem người dùng đã có trong nhóm hay chưa
+    $sql_check = "SELECT * FROM chitietnhom WHERE manhom = ? AND manguoidung = ?";
     $stmt_check = $conn->prepare($sql_check);
-    $stmt_check->bind_param("ii", $manhom, $manhom);
+    $stmt_check->bind_param("is", $manhom, $userId);
     $stmt_check->execute();
     $result_check = $stmt_check->get_result();
-    $row_check = $result_check->fetch_assoc();
 
-    if ($row_check['soluong_sinhvien'] < $row_check['siso']) {
+    if ($result_check->num_rows > 0) {
+        echo "<script>alert('Bạn đã đăng ký nhóm này rồi!');</script>";
+    } else {
         // Thêm sinh viên vào bảng chitietnhom
         $sql_insert = "INSERT INTO chitietnhom (manhom, manguoidung, hienthi) VALUES (?, ?, 1)";
         $stmt_insert = $conn->prepare($sql_insert);
@@ -48,8 +52,6 @@ if (isset($_GET['manhom'])) {
             echo "<script>alert('Có lỗi xảy ra khi đăng ký. Vui lòng thử lại.');</script>";
         }
         $stmt_insert->close();
-    } else {
-        echo "<script>alert('Nhóm đã đầy, không thể đăng ký.');</script>";
     }
 
     $stmt_check->close();
@@ -60,7 +62,6 @@ $sql = "SELECT manhom, tennhom, siso, ghichu, namhoc, hocky, giangvien
         FROM nhom 
         WHERE trangthai = 1 AND hienthi = 1";
 $result = $conn->query($sql);
-
 ?>
 
 <!DOCTYPE html>
@@ -213,8 +214,9 @@ $result = $conn->query($sql);
         <h2><span style="color:#821131;">HUFLIT</span> <span style="color:#FFD700">TEST</span></h2>
         <div class="menu-section">
             <h3>Quản lý</h3>
-            <a href="#">Tổng quan</a>
-            <a href="#">Đăng ký nhóm học phần</a>
+            <a href="../page/student_dashboard.php">Tổng quan</a>
+            <a href="../page/dk_nhom.php">Đăng ký nhóm học phần</a>
+            <a href="../page/Test_list.php">Kiểm tra</a>
         </div>
     </div>
 
@@ -223,7 +225,7 @@ $result = $conn->query($sql);
         <!-- Header -->
         <div class="header">
             <h1>Đăng ký nhóm học phần</h1>
-            <a href=".logout.php" class="logout">Đăng xuất</a>
+            <a href="logout.php" class="logout">Đăng xuất</a>
         </div>
 
         <!-- Main Content -->
@@ -254,7 +256,7 @@ $result = $conn->query($sql);
                         <td><?php echo $row['hocky']; ?></td>
                         <td><?php echo $row['giangvien']; ?></td>
                         <td>
-                            <a class="btn-register" href="test_nhom.php?manhom=<?php echo $row['manhom']; ?>">Đăng
+                            <a class="btn-register" href="dk_nhom.php?manhom=<?php echo $row['manhom']; ?>">Đăng
                                 ký</a>
                         </td>
                     </tr>
