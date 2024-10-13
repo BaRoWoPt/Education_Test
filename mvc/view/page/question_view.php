@@ -17,13 +17,29 @@ if ($conn->connect_error) {
 session_start();
 $manhomquyen = $_SESSION['manhomquyen'] ?? 0; // Mặc định là 0 nếu không có quyền
 
-$userId = $_SESSION['user_id'];
-// Lấy ID người dùng từ session
+$userId = $_SESSION['user_id']; // Lấy ID người dùng từ session
 
 // Kiểm tra quyền truy cập
 if ($manhomquyen != 10) {
     echo "Bạn không có quyền truy cập vào danh sách sinh viên.";
     exit; // Ngừng thực thi nếu không có quyền
+}
+
+// Hàm cập nhật hoặc thêm mới chương
+function updateOrInsertChuong($conn, $machuong, $tenchuong, $mamonhoc)
+{
+    // Kiểm tra xem chương đã tồn tại chưa
+    $sqlCheckChuong = "SELECT * FROM chuong WHERE machuong = '$machuong'";
+    $result = $conn->query($sqlCheckChuong);
+
+    if ($result->num_rows > 0) {
+        // Nếu tồn tại, không cần làm gì
+        return; // Thoát khỏi hàm
+    } else {
+        // Nếu chưa tồn tại, thêm mới chương
+        $sqlInsertChuong = "INSERT INTO chuong (machuong, tenchuong, mamonhoc) VALUES ('$machuong', '$tenchuong', '$mamonhoc')";
+        $conn->query($sqlInsertChuong);
+    }
 }
 
 // Xử lý khi form được gửi
@@ -60,6 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $conn->query($sqlCauTraLoi);
             }
 
+            // Cập nhật hoặc thêm mới chương
+            updateOrInsertChuong($conn, $chuong, $chuong, $mamonhoc);
+
             // Redirect sau khi xử lý thành công để tránh form resubmission
             header('Location: ' . $_SERVER['REQUEST_URI']);
             exit();
@@ -95,6 +114,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $conn->query($sqlCauTraLoi);
             }
 
+            // Cập nhật hoặc thêm mới chương
+            updateOrInsertChuong($conn, $chuong, $chuong, $mamonhoc);
+
             // Redirect sau khi xử lý thành công để tránh form resubmission
             header('Location: ' . $_SERVER['REQUEST_URI']);
             exit();
@@ -109,8 +131,6 @@ $sql = "SELECT mamonhoc, tenmonhoc FROM monhoc";
 $result = $conn->query($sql);
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -122,207 +142,207 @@ $result = $conn->query($sql);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            display: flex;
-            height: 100vh;
-        }
+    body {
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        display: flex;
+        height: 100vh;
+    }
 
-        /* Sidebar styles */
-        .sidebar {
-            height: 100vh;
-            width: 250px;
-            background-color: #a12c2f;
-            position: fixed;
-            top: 0;
-            left: 0;
-            color: white;
-            padding-top: 20px;
-            transition: width 0.3s;
-        }
+    /* Sidebar styles */
+    .sidebar {
+        height: 100vh;
+        width: 250px;
+        background-color: #a12c2f;
+        position: fixed;
+        top: 0;
+        left: 0;
+        color: white;
+        padding-top: 20px;
+        transition: width 0.3s;
+    }
 
-        .sidebar h2 {
-            text-align: center;
-            font-weight: bold;
-            color: white;
-        }
+    .sidebar h2 {
+        text-align: center;
+        font-weight: bold;
+        color: white;
+    }
 
-        .sidebar a {
-            display: block;
-            padding: 10px 20px;
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-        }
+    .sidebar a {
+        display: block;
+        padding: 10px 20px;
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+    }
 
-        .sidebar a:hover {
-            background-color: #921e24;
-        }
+    .sidebar a:hover {
+        background-color: #921e24;
+    }
 
-        .menu-section {
-            margin-bottom: 20px;
-            margin-top: 60px;
-        }
+    .menu-section {
+        margin-bottom: 20px;
+        margin-top: 60px;
+    }
 
-        .menu-section h3 {
-            font-size: 16px;
-            text-transform: uppercase;
-            margin-left: 20px;
-            margin-bottom: 10px;
-            color: #FFD700;
-        }
+    .menu-section h3 {
+        font-size: 16px;
+        text-transform: uppercase;
+        margin-left: 20px;
+        margin-bottom: 10px;
+        color: #FFD700;
+    }
 
-        .content {
-            margin-left: 260px;
-            padding: 20px;
-        }
+    .content {
+        margin-left: 260px;
+        padding: 20px;
+    }
 
-        .add-button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            text-decoration: none;
-        }
+    .add-button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        text-decoration: none;
+    }
 
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
 
-        .modal-content {
-            background-color: #fff;
-            margin: auto;
-            padding: 20px;
-            border-radius: 12px;
-            /* Bo góc cho mềm mại */
-            width: 600px;
-            /* Tăng độ rộng để có nhiều không gian */
-            max-width: 100%;
-            /* Đảm bảo không vượt quá chiều rộng màn hình */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            /* Thêm hiệu ứng đổ bóng */
-            position: relative;
-            /* Để vị trí của phần tử con dễ quản lý */
-        }
+    .modal-content {
+        background-color: #fff;
+        margin: auto;
+        padding: 20px;
+        border-radius: 12px;
+        /* Bo góc cho mềm mại */
+        width: 600px;
+        /* Tăng độ rộng để có nhiều không gian */
+        max-width: 100%;
+        /* Đảm bảo không vượt quá chiều rộng màn hình */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        /* Thêm hiệu ứng đổ bóng */
+        position: relative;
+        /* Để vị trí của phần tử con dễ quản lý */
+    }
 
-        .modal-header {
-            font-weight: bold;
-            text-align: center;
-            /* Canh giữa tiêu đề modal */
-            font-size: 24px;
-            /* Tăng kích thước chữ tiêu đề */
-            color: #007bff;
-            /* Màu xanh chủ đạo */
-            margin-bottom: 15px;
-        }
+    .modal-header {
+        font-weight: bold;
+        text-align: center;
+        /* Canh giữa tiêu đề modal */
+        font-size: 24px;
+        /* Tăng kích thước chữ tiêu đề */
+        color: #007bff;
+        /* Màu xanh chủ đạo */
+        margin-bottom: 15px;
+    }
 
-        .close {
-            position: absolute;
-            /* Đặt nút đóng ở góc trên bên phải */
-            top: 10px;
-            right: 15px;
-            color: #333;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+    .close {
+        position: absolute;
+        /* Đặt nút đóng ở góc trên bên phải */
+        top: 10px;
+        right: 15px;
+        color: #333;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+    }
 
-        .close:hover,
-        .close:focus {
-            color: #d9534f;
-            /* Màu đỏ khi hover hoặc focus */
-        }
+    .close:hover,
+    .close:focus {
+        color: #d9534f;
+        /* Màu đỏ khi hover hoặc focus */
+    }
 
-        .form-group label {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-        }
+    .form-group label {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+    }
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
-            padding: 10px;
-        }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        padding: 10px;
+    }
 
-        .form-group input[type="checkbox"] {
-            width: auto;
-            /* Sửa checkbox để không chiếm chiều rộng của input */
-        }
+    .form-group input[type="checkbox"] {
+        width: auto;
+        /* Sửa checkbox để không chiếm chiều rộng của input */
+    }
 
-        .save-button {
-            width: 100%;
-            padding: 10px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            text-transform: uppercase;
-            /* Chữ in hoa */
-        }
+    .save-button {
+        width: 100%;
+        padding: 10px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        text-transform: uppercase;
+        /* Chữ in hoa */
+    }
 
-        .save-button:hover {
-            background-color: #218838;
-            /* Đổi màu khi hover */
-        }
+    .save-button:hover {
+        background-color: #218838;
+        /* Đổi màu khi hover */
+    }
 
-        .question_list {
-            margin-top: 20px;
-        }
+    .question_list {
+        margin-top: 20px;
+    }
 
-        label {
-            font-weight: bold;
-        }
+    label {
+        font-weight: bold;
+    }
 
-        input,
-        textarea,
-        select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            margin-bottom: 10px;
-        }
+    input,
+    textarea,
+    select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
 
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
 
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
 
-        .save-button {
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    .save-button {
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
     </style>
 </head>
 
@@ -491,56 +511,56 @@ $result = $conn->query($sql);
     </div>
 
     <script>
-        // Mở modal thêm câu hỏi mới
-        document.getElementById('openModalBtn').onclick = function() {
-            document.getElementById('addQuestionModal').style.display = 'block';
-        }
+    // Mở modal thêm câu hỏi mới
+    document.getElementById('openModalBtn').onclick = function() {
+        document.getElementById('addQuestionModal').style.display = 'block';
+    }
 
-        // Đóng modal
-        document.getElementById('closeModalBtn').onclick = function() {
-            document.getElementById('addQuestionModal').style.display = 'none';
-        }
-        document.getElementById('closeEditModalBtn').onclick = function() {
-            document.getElementById('editQuestionModal').style.display = 'none';
-        }
+    // Đóng modal
+    document.getElementById('closeModalBtn').onclick = function() {
+        document.getElementById('addQuestionModal').style.display = 'none';
+    }
+    document.getElementById('closeEditModalBtn').onclick = function() {
+        document.getElementById('editQuestionModal').style.display = 'none';
+    }
 
-        // Mở modal chỉnh sửa câu hỏi
-        const editButtons = document.querySelectorAll('.edit-btn');
-        editButtons.forEach(button => {
-            button.onclick = function() {
-                const macauhoi = this.getAttribute('data-id');
+    // Mở modal chỉnh sửa câu hỏi
+    const editButtons = document.querySelectorAll('.edit-btn');
+    editButtons.forEach(button => {
+        button.onclick = function() {
+            const macauhoi = this.getAttribute('data-id');
 
-                // Gọi API hoặc thực hiện AJAX để lấy thông tin câu hỏi và câu trả lời
-                fetch('get_question.php?macauhoi=' + macauhoi)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Điền dữ liệu vào modal
-                        document.getElementById('editMacauhoi').value = data.macauhoi;
-                        document.getElementById('editMamonhoc').value = data.mamonhoc;
-                        document.getElementById('editChuong').value = data.chuong;
-                        document.getElementById('editNoidungcauhoi').value = data.noidung;
-                        document.getElementById('editDo_kho').value = data.dokho == 1 ? 'Cơ bản' : (data
-                            .dokho == 2 ? 'Trung bình' : 'Nâng cao');
+            // Gọi API hoặc thực hiện AJAX để lấy thông tin câu hỏi và câu trả lời
+            fetch('get_question.php?macauhoi=' + macauhoi)
+                .then(response => response.json())
+                .then(data => {
+                    // Điền dữ liệu vào modal
+                    document.getElementById('editMacauhoi').value = data.macauhoi;
+                    document.getElementById('editMamonhoc').value = data.mamonhoc;
+                    document.getElementById('editChuong').value = data.chuong;
+                    document.getElementById('editNoidungcauhoi').value = data.noidung;
+                    document.getElementById('editDo_kho').value = data.dokho == 1 ? 'Cơ bản' : (data
+                        .dokho == 2 ? 'Trung bình' : 'Nâng cao');
 
-                        // Làm sạch container câu trả lời
-                        const editCauTraLoiContainer = document.getElementById('editCauTraLoiContainer');
-                        editCauTraLoiContainer.innerHTML = ''; // Xóa các câu trả lời cũ
+                    // Làm sạch container câu trả lời
+                    const editCauTraLoiContainer = document.getElementById('editCauTraLoiContainer');
+                    editCauTraLoiContainer.innerHTML = ''; // Xóa các câu trả lời cũ
 
-                        data.cautraloi.forEach((cautraloi, index) => {
-                            const div = document.createElement('div');
-                            div.innerHTML =
-                                `<input type="text" name="cautraloi[]" value="${cautraloi.noidungtl}" placeholder="Câu trả lời ${index + 1}" required>
+                    data.cautraloi.forEach((cautraloi, index) => {
+                        const div = document.createElement('div');
+                        div.innerHTML =
+                            `<input type="text" name="cautraloi[]" value="${cautraloi.noidungtl}" placeholder="Câu trả lời ${index + 1}" required>
                                             <input type="checkbox" name="ladapan[${index}]" ${cautraloi.ladapan ? 'checked' : ''}> Đáp án đúng`;
-                            editCauTraLoiContainer.appendChild(div);
-                        });
-
-                        // Mở modal chỉnh sửa
-                        document.getElementById('editQuestionModal').style.display = 'block';
+                        editCauTraLoiContainer.appendChild(div);
                     });
-            }
-        });
 
-        // Xử lý xóa câu hỏi
+                    // Mở modal chỉnh sửa
+                    document.getElementById('editQuestionModal').style.display = 'block';
+                });
+        }
+    });
+
+    // Xử lý xóa câu hỏi
     </script>
 </body>
 
