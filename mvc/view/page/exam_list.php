@@ -57,62 +57,62 @@ $conn->close();
     <title>Danh sách đề thi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            display: flex;
-        }
+    body {
+        display: flex;
+    }
 
-        .sidebar {
-            height: 100vh;
-            width: 250px;
-            background-color: #a12c2f;
-            position: fixed;
-            top: 0;
-            left: 0;
-            color: white;
-            padding-top: 20px;
-            transition: width 0.3s;
-        }
+    .sidebar {
+        height: 100vh;
+        width: 250px;
+        background-color: #a12c2f;
+        position: fixed;
+        top: 0;
+        left: 0;
+        color: white;
+        padding-top: 20px;
+        transition: width 0.3s;
+    }
 
-        .text_row {
-            font-size: 14px;
-        }
+    .text_row {
+        font-size: 14px;
+    }
 
-        .sidebar h2 {
-            text-align: center;
-            font-weight: bold;
-            color: white;
-        }
+    .sidebar h2 {
+        text-align: center;
+        font-weight: bold;
+        color: white;
+    }
 
-        .sidebar a {
-            display: block;
-            padding: 10px 20px;
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-        }
+    .sidebar a {
+        display: block;
+        padding: 10px 20px;
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+    }
 
-        .sidebar a:hover {
-            background-color: #921e24;
-        }
+    .sidebar a:hover {
+        background-color: #921e24;
+    }
 
-        .menu-section {
-            margin-bottom: 20px;
-            margin-top: 60px;
-        }
+    .menu-section {
+        margin-bottom: 20px;
+        margin-top: 60px;
+    }
 
-        .menu-section h3 {
-            font-size: 16px;
-            text-transform: uppercase;
-            margin-left: 20px;
-            margin-bottom: 10px;
-            color: #FFD700;
-        }
+    .menu-section h3 {
+        font-size: 16px;
+        text-transform: uppercase;
+        margin-left: 20px;
+        margin-bottom: 10px;
+        color: #FFD700;
+    }
 
 
-        .content {
-            margin-left: 250px;
-            padding: 20px;
-        }
+    .content {
+        margin-left: 250px;
+        padding: 20px;
+    }
     </style>
 </head>
 
@@ -125,8 +125,8 @@ $conn->close();
             <a href="../page/classView.php">Nhóm học phần</a>
             <a href="../page/question_view.php">Câu hỏi</a>
             <a href="../page/learning.php">Môn học</a>
-            <a href="#">Đề kiểm tra</a>
-            <a href="#">Thông báo</a>
+            <a href="../page/tao_dethi.php">Tạo đề kiểm tra</a>
+            <a href="../page/exam_list.php">Bộ đề</a>
         </div>
     </div>
 
@@ -146,30 +146,30 @@ $conn->close();
             </thead>
             <tbody>
                 <?php if (!empty($exams)): ?>
-                    <?php foreach ($exams as $row): ?>
-                        <tr>
-                            <td><?= $row['made'] ?></td>
-                            <td><?= $row['tende'] ?></td>
-                            <td><?= $row['thoigiantao'] ?></td>
-                            <td><?= $row['thoigianbatdau'] ?></td>
-                            <td><?= $row['thoigianketthuc'] ?></td>
-                            <td><?= $row['trangthai'] == 1 ? 'Kích hoạt' : 'Không kích hoạt' ?></td>
-                            <td>
-                                <!-- Nút cập nhật hiển thị modal -->
-                                <button class='btn btn-warning btn-sm'
-                                    onclick="openUpdateModal(<?= $row['made'] ?>, '<?= $row['tende'] ?>', '<?= $row['thoigianbatdau'] ?>', '<?= $row['thoigianketthuc'] ?>', <?= $row['trangthai'] ?>)">Cập
-                                    nhật</button>
-                                <!-- Nút xóa -->
-                                <a href='exam_list.php?delete_id=<?= $row['made'] ?>'
-                                    onclick="return confirm('Bạn có chắc chắn muốn xóa đề thi này không?');"
-                                    class='btn btn-danger btn-sm'>Xóa</a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
+                <?php foreach ($exams as $row): ?>
+                <tr>
+                    <td><?= $row['made'] ?></td>
+                    <td><?= $row['tende'] ?></td>
+                    <td><?= $row['thoigiantao'] ?></td>
+                    <td><?= $row['thoigianbatdau'] ?></td>
+                    <td><?= $row['thoigianketthuc'] ?></td>
+                    <td><?= $row['trangthai'] == 1 ? 'Kích hoạt' : 'Không kích hoạt' ?></td>
+                    <td>
+                        <!-- Nút cập nhật hiển thị modal -->
+                        <button class='btn btn-warning btn-sm'
+                            onclick="openUpdateModal(<?= $row['made'] ?>, '<?= $row['tende'] ?>', '<?= $row['thoigianbatdau'] ?>', '<?= $row['thoigianketthuc'] ?>', <?= $row['trangthai'] ?>)">Cập
+                            nhật</button>
+                        <!-- Nút xóa -->
+                        <a href='exam_list.php?delete_id=<?= $row['made'] ?>'
+                            onclick="return confirm('Bạn có chắc chắn muốn xóa đề thi này không?');"
+                            class='btn btn-danger btn-sm'>Xóa</a>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
                 <?php else: ?>
-                    <tr>
-                        <td colspan='7'>Không có đề thi nào.</td>
-                    </tr>
+                <tr>
+                    <td colspan='7'>Không có đề thi nào.</td>
+                </tr>
                 <?php endif; ?>
             </tbody>
         </table>
@@ -221,29 +221,29 @@ $conn->close();
 
     <!-- Script để mở modal và gửi dữ liệu cập nhật -->
     <script>
-        function openUpdateModal(made, tende, thoigianbatdau, thoigianketthuc, trangthai) {
-            // Điền dữ liệu vào modal
-            $('#update_made').val(made);
-            $('#update_tende').val(tende);
-            $('#update_thoigianbatdau').val(thoigianbatdau);
-            $('#update_thoigianketthuc').val(thoigianketthuc);
-            $('#update_trangthai').val(trangthai);
+    function openUpdateModal(made, tende, thoigianbatdau, thoigianketthuc, trangthai) {
+        // Điền dữ liệu vào modal
+        $('#update_made').val(made);
+        $('#update_tende').val(tende);
+        $('#update_thoigianbatdau').val(thoigianbatdau);
+        $('#update_thoigianketthuc').val(thoigianketthuc);
+        $('#update_trangthai').val(trangthai);
 
-            // Mở modal
-            $('#updateExamModal').modal('show');
-        }
+        // Mở modal
+        $('#updateExamModal').modal('show');
+    }
 
-        // Xử lý form cập nhật
-        $('#updateExamForm').submit(function(e) {
-            e.preventDefault();
-            const data = $(this).serialize();
-            $.post('update_exam.php', data, function(response) {
-                alert('Cập nhật thành công!');
-                window.location.reload();
-            }).fail(function() {
-                alert('Cập nhật thất bại!');
-            });
+    // Xử lý form cập nhật
+    $('#updateExamForm').submit(function(e) {
+        e.preventDefault();
+        const data = $(this).serialize();
+        $.post('update_exam.php', data, function(response) {
+            alert('Cập nhật thành công!');
+            window.location.reload();
+        }).fail(function() {
+            alert('Cập nhật thất bại!');
         });
+    });
     </script>
 </body>
 

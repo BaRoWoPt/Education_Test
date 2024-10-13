@@ -12,55 +12,45 @@ if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
 
-// Lấy mã câu hỏi từ yêu cầu GET
-$macauhoi = isset($_GET['macauhoi']) ? intval($_GET['macauhoi']) : 0;
+// Lấy một câu hỏi ngẫu nhiên
+$sqlRandomQuestion = "SELECT * FROM cauhoi ORDER BY RAND() LIMIT 1";
+$resultQuestion = $conn->query($sqlRandomQuestion);
 
-if ($macauhoi > 0) {
-    // Lấy thông tin câu hỏi
-    $sqlQuestion = "SELECT * FROM cauhoi WHERE macauhoi = ?";
-    $stmt = $conn->prepare($sqlQuestion);
-    $stmt->bind_param("i", $macauhoi);
-    $stmt->execute();
-    $resultQuestion = $stmt->get_result();
+if ($resultQuestion->num_rows > 0) {
+    $questionData = $resultQuestion->fetch_assoc();
+    $macauhoi = $questionData['macauhoi'];
 
-    if ($resultQuestion->num_rows > 0) {
-        $questionData = $resultQuestion->fetch_assoc();
+    // Lấy các câu trả lời tương ứng
+    $sqlAnswers = "SELECT * FROM cautraloi WHERE macauhoi = ?";
+    $stmtAnswers = $conn->prepare($sqlAnswers);
+    $stmtAnswers->bind_param("i", $macauhoi);
+    $stmtAnswers->execute();
+    $resultAnswers = $stmtAnswers->get_result();
 
-        // Lấy các câu trả lời tương ứng
-        $sqlAnswers = "SELECT * FROM cautraloi WHERE macauhoi = ?";
-        $stmtAnswers = $conn->prepare($sqlAnswers);
-        $stmtAnswers->bind_param("i", $macauhoi);
-        $stmtAnswers->execute();
-        $resultAnswers = $stmtAnswers->get_result();
-
-        $answers = [];
-        while ($rowAnswer = $resultAnswers->fetch_assoc()) {
-            $answers[] = [
-                'noidungtl' => $rowAnswer['noidungtl'],
-                'ladapan' => $rowAnswer['ladapan']
-            ];
-        }
-
-        // Chuẩn bị dữ liệu trả về
-        $response = [
-            'macauhoi' => $questionData['macauhoi'],
-            'mamonhoc' => $questionData['mamonhoc'],
-            'chuong' => $questionData['chuong'],
-            'noidung' => $questionData['noidung'],
-            'dokho' => $questionData['dokho'],
-            'cautraloi' => $answers
+    $answers = [];
+    while ($rowAnswer = $resultAnswers->fetch_assoc()) {
+        $answers[] = [
+            'noidungtl' => $rowAnswer['noidungtl'],
+            'ladapan' => $rowAnswer['ladapan']
         ];
-
-        // Trả về dữ liệu dưới dạng JSON
-        header('Content-Type: application/json');
-        echo json_encode($response);
-    } else {
-        // Nếu không tìm thấy câu hỏi
-        echo json_encode(['error' => 'Câu hỏi không tồn tại.']);
     }
+
+    // Chuẩn bị dữ liệu trả về
+    $response = [
+        'macauhoi' => $questionData['macauhoi'],
+        'mamonhoc' => $questionData['mamonhoc'],
+        'chuong' => $questionData['chuong'],
+        'noidung' => $questionData['noidung'],
+        'dokho' => $questionData['dokho'],
+        'cautraloi' => $answers
+    ];
+
+    // Trả về dữ liệu dưới dạng JSON
+    header('Content-Type: application/json');
+    echo json_encode($response);
 } else {
-    // Nếu mã câu hỏi không hợp lệ
-    echo json_encode(['error' => 'Mã câu hỏi không hợp lệ. Giá trị nhận được: ' . $_GET['macauhoi']]);
+    // Nếu không tìm thấy câu hỏi
+    echo json_encode(['error' => 'Không có câu hỏi nào trong cơ sở dữ liệu.']);
 }
 
 // Đóng kết nối

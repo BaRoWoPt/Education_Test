@@ -30,6 +30,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error_message = "Tên đăng nhập hoặc mật khẩu không đúng.";
     }
 }
+session_start();
+$manhomquyen = $_SESSION['manhomquyen'] ?? 0; // Mặc định là 0 nếu không có quyền
+$userId = $_SESSION['user_id'];
+// Kiểm tra quyền truy cập
+if ($manhomquyen != 10) {
+    echo "Bạn không có quyền truy cập vào danh sách sinh viên.";
+    exit; // Ngừng thực thi nếu không có quyền
+}
+
+$userId = $_SESSION['user_id'];
+// Lấy ID người dùng từ session
 ?>
 
 <!DOCTYPE html>
@@ -155,8 +166,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a href="../page/classView.php">Nhóm học phần</a>
             <a href="../page/question_view.php">Câu hỏi</a>
             <a href="../page/learning.php">Môn học</a>
-            <a href="../page/tao_dethi.php">Đề kiểm tra</a>
-            <a href="#">Thông báo</a>
+            <a href="../page/tao_dethi.php">Tạo đề kiểm tra</a>
+            <a href="../page/exam_list.php">Bộ đề</a>
         </div>
 
         <!-- <div class="menu-section">

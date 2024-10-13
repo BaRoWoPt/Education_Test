@@ -3,7 +3,8 @@ $server = 'localhost';
 $user = 'root';
 $pass = '';
 $database = 'WebThiTracNghiem';
-
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 // Tạo kết nối đến cơ sở dữ liệu
 $conn = new mysqli($server, $user, $pass, $database);
 
@@ -207,8 +208,8 @@ $result = mysqli_query($conn, $query);
                     <a href="../page/classView.php">Nhóm học phần</a>
                     <a href="../page/question_view.php">Câu hỏi</a>
                     <a href="../page/learning.php">Môn học</a>
-                    <a href="../page/tao_dethi.php">Đề kiểm tra</a>
-                    <a href="#">Thông báo</a>
+                    <a href="../page/tao_dethi.php">Tạo đề kiểm tra</a>
+                    <a href="../page/exam_list.php">Bộ đề</a>
                 </div>
 
                 <!-- <div class="menu-section">
@@ -274,7 +275,6 @@ $result = mysqli_query($conn, $query);
         </div>
     </div>
 
-    <!-- Modal để Thêm Nhóm -->
     <!-- Modal để Thêm Nhóm -->
     <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModalLabel" aria-hidden="true">
         <div class="modal-dialog">

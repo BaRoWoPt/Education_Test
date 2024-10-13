@@ -75,129 +75,129 @@ $result = $conn->query($sql);
     <link rel="icon" href="/mvc//view/img/68e129217733aa0645b48e7c154d2303-_1_.svg" type="image/x-icon">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* CSS cho giao diện */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-        }
+    /* CSS cho giao diện */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
 
+    .sidebar {
+        height: 100vh;
+        width: 250px;
+        background-color: #a12c2f;
+        position: fixed;
+        top: 0;
+        left: 0;
+        color: white;
+        padding-top: 20px;
+        transition: width 0.3s;
+    }
+
+    .sidebar h2 {
+        text-align: center;
+        font-weight: bold;
+        color: white;
+    }
+
+    .sidebar a {
+        display: block;
+        padding: 10px 20px;
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+    }
+
+    .sidebar a:hover {
+        background-color: #921e24;
+    }
+
+    .menu-section {
+        margin-bottom: 20px;
+        margin-top: 60px;
+    }
+
+    .menu-section h3 {
+        font-size: 16px;
+        text-transform: uppercase;
+        margin-left: 20px;
+        margin-bottom: 10px;
+        color: #FFD700;
+    }
+
+    .content {
+        margin-left: 250px;
+        padding: 20px;
+        flex-grow: 1;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background-color: #821131;
+        color: #FFD700;
+        border: none;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .edit,
+    .delete {
+        text-decoration: none;
+        color: white;
+        padding: 5px 10px;
+        margin: 2px;
+        border-radius: 3px;
+    }
+
+    .edit {
+        background-color: green;
+    }
+
+    .delete {
+        background-color: red;
+    }
+
+    @media (max-width: 768px) {
         .sidebar {
-            height: 100vh;
-            width: 250px;
-            background-color: #a12c2f;
-            position: fixed;
-            top: 0;
-            left: 0;
-            color: white;
-            padding-top: 20px;
-            transition: width 0.3s;
-        }
-
-        .sidebar h2 {
-            text-align: center;
-            font-weight: bold;
-            color: white;
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 10px 20px;
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-        }
-
-        .sidebar a:hover {
-            background-color: #921e24;
-        }
-
-        .menu-section {
-            margin-bottom: 20px;
-            margin-top: 60px;
-        }
-
-        .menu-section h3 {
-            font-size: 16px;
-            text-transform: uppercase;
-            margin-left: 20px;
-            margin-bottom: 10px;
-            color: #FFD700;
+            width: 200px;
         }
 
         .content {
-            margin-left: 250px;
-            padding: 20px;
-            flex-grow: 1;
+            margin-left: 200px;
         }
+    }
 
-        table {
+    @media (max-width: 576px) {
+        .sidebar {
             width: 100%;
-            border-collapse: collapse;
+            position: relative;
+            height: auto;
         }
 
-        table,
-        th,
-        td {
-            border: 1px solid black;
-        }
-
-        th,
-        td {
+        .content {
+            margin-left: 0;
             padding: 10px;
-            text-align: center;
         }
-
-        .btn-primary {
-            background-color: #821131;
-            color: #FFD700;
-            border: none;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        .edit,
-        .delete {
-            text-decoration: none;
-            color: white;
-            padding: 5px 10px;
-            margin: 2px;
-            border-radius: 3px;
-        }
-
-        .edit {
-            background-color: green;
-        }
-
-        .delete {
-            background-color: red;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 200px;
-            }
-
-            .content {
-                margin-left: 200px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .sidebar {
-                width: 100%;
-                position: relative;
-                height: auto;
-            }
-
-            .content {
-                margin-left: 0;
-                padding: 10px;
-            }
-        }
+    }
     </style>
 </head>
 
@@ -211,8 +211,8 @@ $result = $conn->query($sql);
             <a href="../page/classView.php">Nhóm học phần</a>
             <a href="../page/question_view.php">Câu hỏi</a>
             <a href="../page/learning.php">Môn học</a>
-            <a href="../page/tao_dethi.php">Đề kiểm tra</a>
-            <a href="#">Thông báo</a>
+            <a href="../page/tao_dethi.php">Tạo đề kiểm tra</a>
+            <a href="../page/exam_list.php">Bộ đề</a>
         </div>
     </div>
 
@@ -273,30 +273,30 @@ $result = $conn->query($sql);
                 </thead>
                 <tbody>
                     <?php if ($result->num_rows > 0): ?>
-                        <?php while ($row = $result->fetch_assoc()): ?>
-                            <tr>
-                                <td><?php echo $row['mamonhoc']; ?></td>
-                                <td><?php echo $row['tenmonhoc']; ?></td>
-                                <td><?php echo $row['sotinchi']; ?></td>
-                                <td><?php echo $row['sotietlythuyet']; ?></td>
-                                <td><?php echo $row['sotietthuchanh']; ?></td>
-                                <td><?php echo $row['trangthai'] ? 'Hoạt động' : 'Ngưng hoạt động'; ?></td>
-                                <td>
-                                    <a href="#" class="edit" data-toggle="modal" data-target="#editModal"
-                                        data-mamonhoc="<?php echo $row['mamonhoc']; ?>"
-                                        data-tenmonhoc="<?php echo $row['tenmonhoc']; ?>"
-                                        data-sotinchi="<?php echo $row['sotinchi']; ?>"
-                                        data-sotietlythuyet="<?php echo $row['sotietlythuyet']; ?>"
-                                        data-sotietthuchanh="<?php echo $row['sotietthuchanh']; ?>"
-                                        data-trangthai="<?php echo $row['trangthai']; ?>">Sửa</a>
-                                    <a href="?delete=<?php echo $row['mamonhoc']; ?>" class="delete">Xóa</a>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                    <tr>
+                        <td><?php echo $row['mamonhoc']; ?></td>
+                        <td><?php echo $row['tenmonhoc']; ?></td>
+                        <td><?php echo $row['sotinchi']; ?></td>
+                        <td><?php echo $row['sotietlythuyet']; ?></td>
+                        <td><?php echo $row['sotietthuchanh']; ?></td>
+                        <td><?php echo $row['trangthai'] ? 'Hoạt động' : 'Ngưng hoạt động'; ?></td>
+                        <td>
+                            <a href="#" class="edit" data-toggle="modal" data-target="#editModal"
+                                data-mamonhoc="<?php echo $row['mamonhoc']; ?>"
+                                data-tenmonhoc="<?php echo $row['tenmonhoc']; ?>"
+                                data-sotinchi="<?php echo $row['sotinchi']; ?>"
+                                data-sotietlythuyet="<?php echo $row['sotietlythuyet']; ?>"
+                                data-sotietthuchanh="<?php echo $row['sotietthuchanh']; ?>"
+                                data-trangthai="<?php echo $row['trangthai']; ?>">Sửa</a>
+                            <a href="?delete=<?php echo $row['mamonhoc']; ?>" class="delete">Xóa</a>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
                     <?php else: ?>
-                        <tr>
-                            <td colspan="7">Không có dữ liệu môn học.</td>
-                        </tr>
+                    <tr>
+                        <td colspan="7">Không có dữ liệu môn học.</td>
+                    </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -347,25 +347,25 @@ $result = $conn->query($sql);
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        // JavaScript xử lý cho modal chỉnh sửa
-        $('#editModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget); // Lấy button đã kích hoạt modal
-            var mamonhoc = button.data('mamonhoc');
-            var tenmonhoc = button.data('tenmonhoc');
-            var sotinchi = button.data('sotinchi');
-            var sotietlythuyet = button.data('sotietlythuyet');
-            var sotietthuchanh = button.data('sotietthuchanh');
-            var trangthai = button.data('trangthai');
+    // JavaScript xử lý cho modal chỉnh sửa
+    $('#editModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget); // Lấy button đã kích hoạt modal
+        var mamonhoc = button.data('mamonhoc');
+        var tenmonhoc = button.data('tenmonhoc');
+        var sotinchi = button.data('sotinchi');
+        var sotietlythuyet = button.data('sotietlythuyet');
+        var sotietthuchanh = button.data('sotietthuchanh');
+        var trangthai = button.data('trangthai');
 
-            var modal = $(this);
-            modal.find('#edit-id').val(mamonhoc);
-            modal.find('#edit-mamonhoc').val(mamonhoc);
-            modal.find('#edit-tenmonhoc').val(tenmonhoc);
-            modal.find('#edit-sotinchi').val(sotinchi);
-            modal.find('#edit-sotietlythuyet').val(sotietlythuyet);
-            modal.find('#edit-sotietthuchanh').val(sotietthuchanh);
-            modal.find('#edit-trangthai').prop('checked', trangthai == 1);
-        });
+        var modal = $(this);
+        modal.find('#edit-id').val(mamonhoc);
+        modal.find('#edit-mamonhoc').val(mamonhoc);
+        modal.find('#edit-tenmonhoc').val(tenmonhoc);
+        modal.find('#edit-sotinchi').val(sotinchi);
+        modal.find('#edit-sotietlythuyet').val(sotietlythuyet);
+        modal.find('#edit-sotietthuchanh').val(sotietthuchanh);
+        modal.find('#edit-trangthai').prop('checked', trangthai == 1);
+    });
     </script>
 </body>
 

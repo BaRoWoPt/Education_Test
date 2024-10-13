@@ -21,22 +21,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $socau_tb = $_POST['socau_tb'];
     $socau_kho = $_POST['socau_kho'];
     $mamonhoc = $_POST['mamonhoc'];
-    // Nhập thời gian thi (phút)
-    $thoigianlambai = $_POST['thoigianlambai']; // Sử dụng biến đúng
+    $thoigianlambai = $_POST['thoigianlambai']; // Thời gian làm bài
 
-    // Kiểm tra biến thoigianthi có giá trị hợp lệ
+    // Kiểm tra biến thoigianlambai có giá trị hợp lệ
     if (empty($thoigianlambai) || !is_numeric($thoigianlambai)) {
         die("Thời gian làm bài không hợp lệ.");
     }
 
     // Thực hiện các bước lưu dữ liệu vào cơ sở dữ liệu
-    $sql = "INSERT INTO dethi (tende,thoigianbatdau, thoigianthi,nguoitao,thoigianketthuc, socaude, socautb, socaukho,monthi)
-        VALUES ('$tende', '$thoigianbatdau','$thoigianlambai','$userId', DATE_ADD('$thoigianbatdau', INTERVAL $thoigianlambai MINUTE), '$socau_de', '$socau_tb', '$socau_kho','$mamonhoc')";
+    $sql = "INSERT INTO dethi (tende, thoigianbatdau, thoigianthi, nguoitao, thoigianketthuc, socaude, socautb, socaukho, monthi)
+            VALUES ('$tende', '$thoigianbatdau', '$thoigianlambai', '$userId', 
+                    DATE_ADD('$thoigianbatdau', INTERVAL $thoigianlambai MINUTE), 
+                    '$socau_de', '$socau_tb', '$socau_kho', '$mamonhoc')";
 
     if ($conn->query($sql) === TRUE) {
-        echo "Tạo đề kiểm tra thành công!";
-        header("Location: tao_dethi.php");
-        exit(); // Ngăn chặn việc thực hiện thêm mã sau khi chuyển hướng
+        // Sau khi thành công, chuyển hướng với thông báo thành công
+        header("Location: tao_dethi.php?success=1");
+        exit();
     } else {
         echo "Lỗi: " . $sql . "<br>" . $conn->error;
     }
