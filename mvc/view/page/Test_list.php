@@ -1,10 +1,12 @@
 <?php
 session_start();
+
 $manhomquyen = $_SESSION['manhomquyen'] ?? 0; // Mặc định là 0 nếu không có quyền
 $userId = $_SESSION['user_id'];
 // Kiểm tra quyền truy cập
 if ($manhomquyen != 11) {
     echo "Bạn không có quyền truy cập vào danh sách sinh viên.";
+    echo "<script>window.location.href='login.php';</script>";
     exit; // Ngừng thực thi nếu không có quyền
 }
 
@@ -275,7 +277,7 @@ $result = $conn->query($sql);
 
                             // Tính toán thời gian cho phép vào thi (15 phút sau thời gian bắt đầu)
                             $allowEnterUntil = clone $startTime;
-                            $allowEnterUntil->modify('+15 minutes');
+                            $allowEnterUntil->modify('+1500000000001001990 minutes');
 
                             // Kiểm tra quyền làm bài thi
                             if ($currentTime >= $allowEnterUntil) {
@@ -283,7 +285,10 @@ $result = $conn->query($sql);
                                 echo "<td><button class='btn btn-secondary disabled'>Quá giờ</button></td>";
                             } elseif ($currentTime >= $startTime) {
                                 // Nếu thời gian hiện tại lớn hơn thời gian bắt đầu thi
-                                echo "<td><button class='btn btn-danger'>Tham gia</button></td>";
+                                echo "<td><form method='POST' action='start_exam.php'>
+                                    <input type='hidden' name='made' value='{$made}'>
+                                    <button type='submit' class='btn btn-danger'>Tham gia</button>
+                                </form></td>";
                             } else {
                                 // Nếu chưa đến giờ thi
                                 echo "<td><button class='btn btn-primary'>Chưa bắt đầu</button></td>";
@@ -292,6 +297,70 @@ $result = $conn->query($sql);
                             echo "</tr>";
                         }
                     }
+                    // while ($row = $result->fetch_assoc()) {
+                    //     $manhom = $row["manhom"];
+                    //     $made = $row["made"];
+                    //     $tende = $row["tende"];
+                    //     $thoigiantao = $row["thoigiantao"];
+                    //     $thoigianbatdau = $row["thoigianbatdau"];
+                    //     $thoigianketthuc = $row["thoigianketthuc"];
+
+                    //     // Kiểm tra xem sinh viên có thuộc nhóm không
+                    //     $checkGroupSql = "SELECT * FROM chitietnhom
+                    //                       WHERE manguoidung = ? AND manhom = ?";
+                    //     $stmt = $conn->prepare($checkGroupSql);
+                    //     $stmt->bind_param("ii", $userId, $manhom);
+                    //     $stmt->execute();
+                    //     $groupResult = $stmt->get_result();
+
+                    //     // Chỉ hiển thị đề thi nếu sinh viên thuộc nhóm
+                    //     if ($groupResult->num_rows > 0) {
+                    //         // Kiểm tra xem sinh viên đã thi chưa
+                    //         $checkResultSql = "SELECT * FROM ketqua WHERE manguoidung = ? AND made = ?";
+                    //         $stmtResult = $conn->prepare($checkResultSql);
+                    //         $stmtResult->bind_param("ii", $userId, $made);
+                    //         $stmtResult->execute();
+                    //         $resultCheck = $stmtResult->get_result();
+
+                    //         echo "<tr>";
+                    //         echo "<td>" . $made . "</td>";
+                    //         echo "<td>" . $tende . "</td>";
+                    //         echo "<td>" . $thoigiantao . "</td>";
+                    //         echo "<td>" . $thoigianbatdau . "</td>";
+                    //         echo "<td>" . ($thoigianketthuc ? $thoigianketthuc : "Không xác định") . "</td>";
+
+                    //         // Kiểm tra thời gian hiện tại
+                    //         $currentTime = new DateTime(); // Thời gian hiện tại
+                    //         $startTime = new DateTime($thoigianbatdau); // Thời gian bắt đầu thi
+
+                    //         echo "<td>" . $currentTime->format('Y-m-d H:i:s') . " - " . $startTime->format('Y-m-d H:i:s') . "</td>";
+
+                    //         // Tính toán thời gian cho phép vào thi (15 phút sau thời gian bắt đầu)
+                    //         $allowEnterUntil = clone $startTime;
+                    //         $allowEnterUntil->modify('+15 minutes');
+
+                    //         // Kiểm tra trạng thái đã thi
+                    //         if ($resultCheck->num_rows > 0) {
+                    //             // Nếu sinh viên đã thi
+                    //             echo "<td><button class='btn btn-success'>Đã thi</button></td>";
+                    //         } elseif ($currentTime >= $allowEnterUntil) {
+                    //             // Nếu thời gian hiện tại lớn hơn thời gian cho phép vào thi
+                    //             echo "<td><button class='btn btn-secondary disabled'>Quá giờ</button></td>";
+                    //         } elseif ($currentTime >= $startTime) {
+                    //             // Nếu thời gian hiện tại lớn hơn thời gian bắt đầu thi
+                    //             echo "<td><form method='POST' action='start_exam.php'>
+                    //                 <input type='hidden' name='made' value='{$made}'>
+                    //                 <button type='submit' class='btn btn-danger'>Tham gia</button>
+                    //             </form></td>";
+                    //         } else {
+                    //             // Nếu chưa đến giờ thi
+                    //             echo "<td><button class='btn btn-primary'>Chưa bắt đầu</button></td>";
+                    //         }
+
+                    //         echo "</tr>";
+                    //     }
+                    // }
+
                 } else {
                     echo "<tr><td colspan='7' class='text-center'>Không có đề thi nào.</td></tr>";
                 }

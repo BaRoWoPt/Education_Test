@@ -201,7 +201,7 @@ $userId = $_SESSION['user_id'];
                     </div>
 
                     <!-- Cấu hình -->
-                    <div class="col-lg-4">
+                    <!-- <div class="col-lg-4">
                         <div class="config-container">
                             <h5 class="card-title">Cấu hình</h5>
                             <form>
@@ -227,7 +227,7 @@ $userId = $_SESSION['user_id'];
                                 </div>
                             </form>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </main>
         </div>

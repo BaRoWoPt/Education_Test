@@ -34,6 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Đăng nhập thành công
             $_SESSION['user_id'] = $row['id']; // Lưu thông tin người dùng vào session
             $_SESSION['manhomquyen'] = $row['manhomquyen']; // Lưu nhóm quyền vào session
+            $_SESSION['hoten'] = $row['hoten']; // Lưu tên thí sinh vào session
 
             // Chuyển hướng dựa trên manhomquyen
             if ($_SESSION['manhomquyen'] == 1) {
