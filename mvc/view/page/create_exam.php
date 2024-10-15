@@ -24,20 +24,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $socau_tb = $_POST['socau_tb'];
     $socau_kho = $_POST['socau_kho'];
     $mamonhoc = $_POST['mamonhoc'];
-    $thoigianlambai = $_POST['thoigianlambai']; // Thời gian làm bài tính bằng phút
+    $thoigianthi = $_POST['thoigianthi']; // Thời gian làm bài tính bằng phút
 
     // Kiểm tra biến thoigianlambai có giá trị hợp lệ
-    if (empty($thoigianlambai) || !is_numeric($thoigianlambai) || $thoigianlambai < 0) {
+    if (empty($thoigianthi) || !is_numeric($thoigianthi) || $thoigianthi < 0) {
         die("Thời gian làm bài không hợp lệ.");
     }
 
-    // Chuyển đổi thời gian làm bài từ phút sang giây
-    $thoigianlambai_in_seconds = $thoigianlambai * 60; // Chuyển đổi phút thành giây
-
     // Thực hiện các bước lưu dữ liệu vào cơ sở dữ liệu
     $sql = "INSERT INTO dethi (tende, thoigianbatdau, thoigianthi, nguoitao, thoigianketthuc, socaude, socautb, socaukho, monthi)
-            VALUES ('$tende', '$thoigianbatdau', '$thoigianlambai_in_seconds', '$userId', 
-                    DATE_ADD('$thoigianbatdau', INTERVAL $thoigianlambai MINUTE), 
+            VALUES ('$tende', '$thoigianbatdau', '$thoigianthi', '$userId', 
+                    DATE_ADD('$thoigianbatdau', INTERVAL $thoigianthi MINUTE), 
                     '$socau_de', '$socau_tb', '$socau_kho', '$mamonhoc')";
 
     if ($conn->query($sql) === TRUE) {

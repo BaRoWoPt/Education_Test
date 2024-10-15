@@ -217,6 +217,7 @@ $result = $conn->query($sql);
             <a href="../page/student_dashboard.php">Tổng quan</a>
             <a href="../page/dk_nhom.php">Đăng ký nhóm học phần</a>
             <a href="../page/Test_list.php">Kiểm tra</a>
+            <a href="../page/result_list.php">Kết quả học tập</a>
         </div>
     </div>
 

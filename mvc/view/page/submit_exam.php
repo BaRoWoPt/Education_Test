@@ -68,7 +68,7 @@ $totalQuestions = count($answers);
 $percentage = $totalQuestions > 0 ? ($score / $totalQuestions) * 100 : 0; // Tính phần trăm
 $maxScore = 10; // Giả sử điểm tối đa là 10
 $scorePoints = ($percentage / 100) * $maxScore; // Tính điểm thực tế
-echo "Điểm thực tế: " . $scorePoints; // Kiểm tra giá trị điểm
+
 
 // Lưu các thông tin cần thiết vào session để sử dụng sau này
 $_SESSION['scorePoints'] = $scorePoints;
@@ -85,6 +85,7 @@ $_SESSION['resultDetails'] = $resultDetails; // Lưu kết quả chi tiết vào
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/mvc/view/img/68e129217733aa0645b48e7c154d2303-_1_.svg" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
     body {
@@ -106,7 +107,7 @@ $_SESSION['resultDetails'] = $resultDetails; // Lưu kết quả chi tiết vào
 
     h1 {
         text-align: center;
-        color: #4CAF50;
+        color: #f44336;
     }
 
     .score {
@@ -122,7 +123,7 @@ $_SESSION['resultDetails'] = $resultDetails; // Lưu kết quả chi tiết vào
     }
 
     .correct {
-        color: #4CAF50;
+        color: #77CDFF;
         background-color: #e8f5e9;
     }
 
@@ -145,6 +146,43 @@ $_SESSION['resultDetails'] = $resultDetails; // Lưu kết quả chi tiết vào
         justify-content: center;
         align-items: center;
         margin-top: 30px;
+    }
+
+    button {
+        background-color: #f44336;
+        /* Màu nền */
+        color: white;
+        /* Màu chữ */
+        padding: 15px 30px;
+        /* Kích thước padding */
+        border: none;
+        /* Xóa viền */
+        border-radius: 8px;
+        /* Bo góc */
+        font-size: 16px;
+        /* Kích thước chữ */
+        cursor: pointer;
+        /* Thay đổi con trỏ khi hover */
+        transition: background-color 0.3s, box-shadow 0.3s;
+        /* Thêm hiệu ứng chuyển đổi */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* Đổ bóng cho nút */
+    }
+
+    button:hover {
+        background-color: #f44336;
+        /* Màu nền khi hover */
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        /* Tăng đổ bóng khi hover */
+    }
+
+    button:active {
+        background-color: #f44336;
+        /* Màu nền khi nhấn */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Giảm đổ bóng khi nhấn */
+        transform: translateY(2px);
+        /* Hiệu ứng nhấn xuống */
     }
 
     canvas {
@@ -176,16 +214,17 @@ $_SESSION['resultDetails'] = $resultDetails; // Lưu kết quả chi tiết vào
     </div>
 
     <script>
+    // Lấy đối tượng canvas và context để vẽ hình tròn
     const canvas = document.getElementById('scoreCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Vẽ hình tròn
+    // Hàm vẽ hình tròn dựa trên phần trăm
     function drawCircle(percentage) {
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Xóa canvas
         ctx.beginPath();
         ctx.arc(100, 100, 90, 1.5 * Math.PI, (1.5 + (percentage / 100) * 2) * Math.PI); // Vẽ đường tròn
         ctx.lineWidth = 15;
-        ctx.strokeStyle = percentage >= 50 ? '#4CAF50' : '#f44336'; // Màu sắc phụ thuộc vào tỷ lệ phần trăm
+        ctx.strokeStyle = percentage >= 50 ? '#4CAF50' : '#f44336'; // Màu sắc dựa trên điểm số
         ctx.stroke();
         ctx.closePath();
 
@@ -194,30 +233,45 @@ $_SESSION['resultDetails'] = $resultDetails; // Lưu kết quả chi tiết vào
         ctx.fillStyle = '#333';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(Math.round(percentage) + '%', 100, 100);
+        ctx.fillText(Math.round(percentage) + '%', 100, 100); // Hiển thị phần trăm
     }
 
-    drawCircle(<?php echo $percentage; ?>); // Gọi hàm vẽ với phần trăm
+    // Gọi hàm vẽ với phần trăm đã tính
+    drawCircle(<?php echo $percentage; ?>);
 
-    // AJAX lưu kết quả
+    // Xử lý sự kiện khi nhấn nút "Lưu Kết Quả"
     document.getElementById('saveResultBtn').addEventListener('click', function() {
         const makq = "<?php echo $_SESSION['makq']; ?>";
         const made = "<?php echo $_SESSION['made']; ?>";
         const scorePoints = "<?php echo $_SESSION['scorePoints']; ?>";
         const score = "<?php echo $_SESSION['score']; ?>";
 
+        // Tạo đối tượng XMLHttpRequest để gửi yêu cầu AJAX
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "save_result.php", true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        // Xử lý khi server phản hồi
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
-                // Hiển thị thông báo thành công
-                alert(xhr.responseText);
+                const response = JSON.parse(xhr.responseText); // Parse phản hồi JSON từ server
+
+                // Kiểm tra trạng thái phản hồi từ server
+                if (response.status === 'success') {
+                    alert(response.message); // Thông báo thành công
+                    window.location.href =
+                        "result_list.php"; // Chuyển hướng đến trang student_dashboard.php
+                } else {
+                    alert(response.message); // Thông báo lỗi nếu có
+                }
             }
         };
+
+        // Gửi yêu cầu với dữ liệu đã lấy từ session
         xhr.send(`makq=${makq}&made=${made}&scorePoints=${scorePoints}&score=${score}`);
     });
     </script>
+
 </body>
 
 </html>

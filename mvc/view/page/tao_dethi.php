@@ -143,9 +143,9 @@ $userId = $_SESSION['user_id'];
                                                 name="thoigianbatdau" required>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <label for="thoigianlambai" class="form-label">Thời gian làm bài</label>
-                                            <input type="number" class="form-control" id="thoigianlambai"
-                                                name="thoigianlambai" placeholder="00" min="0" required>
+                                            <label for="thoigianthi" class="form-label">Thời gian làm bài</label>
+                                            <input type="number" class="form-control" id="thoigianthi"
+                                                name="thoigianthi" placeholder="00" min="0" required>
                                         </div>
                                     </div>
                                     <div class="mb-3">
