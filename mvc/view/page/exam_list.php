@@ -181,114 +181,113 @@ $conn->close();
             </tbody>
         </table>
     </div>
-
-    <<!-- Modal cập nhật đề thi -->
-        <div class="modal fade" id="updateExamModal" tabindex="-1" aria-labelledby="updateExamModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="updateExamModalLabel">Cập nhật đề thi</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="updateExamForm" method="POST" action="update_exam.php">
-                            <!-- Chỉ định trang xử lý cập nhật -->
-                            <input type="hidden" id="update_made" name="made">
-                            <div class="mb-3">
-                                <label for="update_tende" class="form-label">Tên đề thi</label>
-                                <input type="text" class="form-control" id="update_tende" name="tende" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="update_thoigianbatdau" class="form-label">Thời gian bắt đầu</label>
-                                <input type="datetime-local" class="form-control" id="update_thoigianbatdau"
-                                    name="thoigianbatdau" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="update_thoigianketthuc" class="form-label">Thời gian kết thúc</label>
-                                <input type="datetime-local" class="form-control" id="update_thoigianketthuc"
-                                    name="thoigianketthuc" required readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label for="update_thoigianthi" class="form-label">Thời gian thi</label>
-                                <input type="number" id="update_thoigianthi" name="thoigianthi"
-                                    placeholder="Nhập thời gian thi (phút)" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="update_trangthai" class="form-label">Trạng thái</label>
-                                <select class="form-select" id="update_trangthai" name="trangthai" required>
-                                    <option value="1">Kích hoạt</option>
-                                    <option value="0">Không kích hoạt</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Cập nhật</button>
-                        </form>
-                    </div>
+    <!-- Modal cập nhật đề thi -->
+    <div class="modal fade" id="updateExamModal" tabindex="-1" aria-labelledby="updateExamModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateExamModalLabel">Cập nhật đề thi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateExamForm" method="POST" action="update_exam.php">
+                        <!-- Chỉ định trang xử lý cập nhật -->
+                        <input type="hidden" id="update_made" name="made">
+                        <div class="mb-3">
+                            <label for="update_tende" class="form-label">Tên đề thi</label>
+                            <input type="text" class="form-control" id="update_tende" name="tende" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_thoigianbatdau" class="form-label">Thời gian bắt đầu</label>
+                            <input type="datetime-local" class="form-control" id="update_thoigianbatdau"
+                                name="thoigianbatdau" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_thoigianketthuc" class="form-label">Thời gian kết thúc</label>
+                            <input type="datetime-local" class="form-control" id="update_thoigianketthuc"
+                                name="thoigianketthuc" required readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_thoigianthi" class="form-label">Thời gian thi</label>
+                            <input type="number" id="update_thoigianthi" name="thoigianthi"
+                                placeholder="Nhập thời gian thi (phút)" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_trangthai" class="form-label">Trạng thái</label>
+                            <select class="form-select" id="update_trangthai" name="trangthai" required>
+                                <option value="1">Kích hoạt</option>
+                                <option value="0">Không kích hoạt</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-        // Lắng nghe sự kiện khi modal mở để tự động điền thông tin
-        const updateExamModal = document.getElementById('updateExamModal');
-        updateExamModal.addEventListener('show.bs.modal', event => {
-            const button = event.relatedTarget; // Lấy nút đã nhấp
-            const made = button.getAttribute('data-made');
-            const tende = button.getAttribute('data-tende');
-            const thoigianbatdau = button.getAttribute('data-thoigianbatdau');
-            const thoigianthi = button.getAttribute('data-thoigianthi');
-            const trangthai = button.getAttribute('data-trangthai');
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Lắng nghe sự kiện khi modal mở để tự động điền thông tin
+    const updateExamModal = document.getElementById('updateExamModal');
+    updateExamModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget; // Lấy nút đã nhấp
+        const made = button.getAttribute('data-made');
+        const tende = button.getAttribute('data-tende');
+        const thoigianbatdau = button.getAttribute('data-thoigianbatdau');
+        const thoigianthi = button.getAttribute('data-thoigianthi');
+        const trangthai = button.getAttribute('data-trangthai');
 
-            // Cập nhật thông tin trong modal
-            const modalTitle = updateExamModal.querySelector('.modal-title');
-            const modalBodyInputMade = updateExamModal.querySelector('#update_made');
-            const modalBodyInputTende = updateExamModal.querySelector('#update_tende');
-            const modalBodyInputThoiGianBatDau = updateExamModal.querySelector('#update_thoigianbatdau');
-            const modalBodyInputThoiGianThi = updateExamModal.querySelector('#update_thoigianthi');
-            const modalBodyInputTrangThai = updateExamModal.querySelector('#update_trangthai');
+        // Cập nhật thông tin trong modal
+        const modalTitle = updateExamModal.querySelector('.modal-title');
+        const modalBodyInputMade = updateExamModal.querySelector('#update_made');
+        const modalBodyInputTende = updateExamModal.querySelector('#update_tende');
+        const modalBodyInputThoiGianBatDau = updateExamModal.querySelector('#update_thoigianbatdau');
+        const modalBodyInputThoiGianThi = updateExamModal.querySelector('#update_thoigianthi');
+        const modalBodyInputTrangThai = updateExamModal.querySelector('#update_trangthai');
 
-            modalTitle.textContent = 'Cập nhật đề thi: ' + tende;
-            modalBodyInputMade.value = made;
-            modalBodyInputTende.value = tende;
-            modalBodyInputThoiGianBatDau.value = thoigianbatdau;
-            modalBodyInputThoiGianThi.value = thoigianthi;
-            modalBodyInputTrangThai.value = trangthai;
+        modalTitle.textContent = 'Cập nhật đề thi: ' + tende;
+        modalBodyInputMade.value = made;
+        modalBodyInputTende.value = tende;
+        modalBodyInputThoiGianBatDau.value = thoigianbatdau;
+        modalBodyInputThoiGianThi.value = thoigianthi;
+        modalBodyInputTrangThai.value = trangthai;
 
-            // Tính toán thời gian kết thúc
-            calculateEndTime();
-        });
+        // Tính toán thời gian kết thúc
+        calculateEndTime();
+    });
 
-        function calculateEndTime() {
-            const startTimeInput = document.getElementById('update_thoigianbatdau');
-            const examDurationInput = document.getElementById('update_thoigianthi');
+    function calculateEndTime() {
+        const startTimeInput = document.getElementById('update_thoigianbatdau');
+        const examDurationInput = document.getElementById('update_thoigianthi');
 
-            if (startTimeInput.value && examDurationInput.value) {
-                const startTime = new Date(startTimeInput.value);
-                const examDuration = parseInt(examDurationInput.value, 10);
+        if (startTimeInput.value && examDurationInput.value) {
+            const startTime = new Date(startTimeInput.value);
+            const examDuration = parseInt(examDurationInput.value, 10);
 
-                if (!isNaN(examDuration) && examDuration >= 0) {
-                    const endTime = new Date(startTime.getTime());
-                    endTime.setMinutes(startTime.getMinutes() + examDuration);
+            if (!isNaN(examDuration) && examDuration >= 0) {
+                const endTime = new Date(startTime.getTime());
+                endTime.setMinutes(startTime.getMinutes() + examDuration);
 
-                    const year = endTime.getFullYear();
-                    const month = String(endTime.getMonth() + 1).padStart(2, '0');
-                    const day = String(endTime.getDate()).padStart(2, '0');
-                    const hours = String(endTime.getHours()).padStart(2, '0');
-                    const minutes = String(endTime.getMinutes()).padStart(2, '0');
+                const year = endTime.getFullYear();
+                const month = String(endTime.getMonth() + 1).padStart(2, '0');
+                const day = String(endTime.getDate()).padStart(2, '0');
+                const hours = String(endTime.getHours()).padStart(2, '0');
+                const minutes = String(endTime.getMinutes()).padStart(2, '0');
 
-                    const formattedEndTime = `${year}-${month}-${day}T${hours}:${minutes}`;
-                    document.getElementById('update_thoigianketthuc').value = formattedEndTime;
-                }
+                const formattedEndTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+                document.getElementById('update_thoigianketthuc').value = formattedEndTime;
             }
         }
+    }
 
-        // Lắng nghe sự kiện khi thay đổi thời gian bắt đầu và thời gian thi
-        document.getElementById('update_thoigianbatdau').addEventListener('input', calculateEndTime);
-        document.getElementById('update_thoigianthi').addEventListener('input', calculateEndTime);
-        </script>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    // Lắng nghe sự kiện khi thay đổi thời gian bắt đầu và thời gian thi
+    document.getElementById('update_thoigianbatdau').addEventListener('input', calculateEndTime);
+    document.getElementById('update_thoigianthi').addEventListener('input', calculateEndTime);
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
