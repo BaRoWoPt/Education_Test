@@ -211,8 +211,8 @@ $result = $conn->query($sql);
             <a href="../page/classView.php">Nhóm học phần</a>
             <a href="../page/question_view.php">Câu hỏi</a>
             <a href="../page/learning.php">Môn học</a>
-            <a href="#">Đề kiểm tra</a>
-            <a href="#">Thông báo</a>
+            <a href="../page/tao_dethi.php">Tạo đề kiểm tra</a>
+            <a href="../page/exam_list.php">Bộ đề</a>
         </div>
     </div>
 

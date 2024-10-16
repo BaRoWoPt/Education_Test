@@ -17,13 +17,29 @@ if ($conn->connect_error) {
 session_start();
 $manhomquyen = $_SESSION['manhomquyen'] ?? 0; // Mặc định là 0 nếu không có quyền
 
-$userId = $_SESSION['user_id'];
-// Lấy ID người dùng từ session
+$userId = $_SESSION['user_id']; // Lấy ID người dùng từ session
 
 // Kiểm tra quyền truy cập
 if ($manhomquyen != 10) {
     echo "Bạn không có quyền truy cập vào danh sách sinh viên.";
     exit; // Ngừng thực thi nếu không có quyền
+}
+
+// Hàm cập nhật hoặc thêm mới chương
+function updateOrInsertChuong($conn, $machuong, $tenchuong, $mamonhoc)
+{
+    // Kiểm tra xem chương đã tồn tại chưa
+    $sqlCheckChuong = "SELECT * FROM chuong WHERE machuong = '$machuong'";
+    $result = $conn->query($sqlCheckChuong);
+
+    if ($result->num_rows > 0) {
+        // Nếu tồn tại, không cần làm gì
+        return; // Thoát khỏi hàm
+    } else {
+        // Nếu chưa tồn tại, thêm mới chương
+        $sqlInsertChuong = "INSERT INTO chuong (machuong, tenchuong, mamonhoc) VALUES ('$machuong', '$tenchuong', '$mamonhoc')";
+        $conn->query($sqlInsertChuong);
+    }
 }
 
 // Xử lý khi form được gửi
@@ -60,6 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $conn->query($sqlCauTraLoi);
             }
 
+            // Cập nhật hoặc thêm mới chương
+            updateOrInsertChuong($conn, $chuong, $chuong, $mamonhoc);
+
             // Redirect sau khi xử lý thành công để tránh form resubmission
             header('Location: ' . $_SERVER['REQUEST_URI']);
             exit();
@@ -95,6 +114,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $conn->query($sqlCauTraLoi);
             }
 
+            // Cập nhật hoặc thêm mới chương
+            updateOrInsertChuong($conn, $chuong, $chuong, $mamonhoc);
+
             // Redirect sau khi xử lý thành công để tránh form resubmission
             header('Location: ' . $_SERVER['REQUEST_URI']);
             exit();
@@ -108,8 +130,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $sql = "SELECT mamonhoc, tenmonhoc FROM monhoc";
 $result = $conn->query($sql);
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -335,7 +355,7 @@ $result = $conn->query($sql);
             <a href="../page/classView.php">Nhóm học phần</a>
             <a href="../page/question_view.php">Câu hỏi</a>
             <a href="../page/learning.php">Môn học</a>
-            <a href="#">Đề kiểm tra</a>
+            <a href="../page/tao_dethi.php">Đề kiểm tra</a>
             <a href="#">Thông báo</a>
         </div>
     </div>

@@ -19,7 +19,9 @@ if ($manhomquyen != 10) {
 }
 $sql = "SELECT manhom, tennhom FROM nhom WHERE hienthi = 1";
 $result = $conn->query($sql);
-
+if (isset($_GET['success']) && $_GET['success'] == 1) {
+    echo "<script>alert('Đề thi đã được tạo thành công!');</script>";
+}
 $userId = $_SESSION['user_id'];
 // Lấy ID người dùng từ session
 ?>
@@ -109,8 +111,8 @@ $userId = $_SESSION['user_id'];
                     <a href="../page/classView.php">Nhóm học phần</a>
                     <a href="../page/question_view.php">Câu hỏi</a>
                     <a href="../page/learning.php">Môn học</a>
-                    <a href="#">Đề kiểm tra</a>
-                    <a href="#">Thông báo</a>
+                    <a href="../page/tao_dethi.php">Tạo đề kiểm tra</a>
+                    <a href="../page/exam_list.php">Bộ đề</a>
                 </div>
             </div>
 
@@ -141,9 +143,9 @@ $userId = $_SESSION['user_id'];
                                                 name="thoigianbatdau" required>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <label for="thoigianlambai" class="form-label">Thời gian làm bài</label>
-                                            <input type="number" class="form-control" id="thoigianlambai"
-                                                name="thoigianlambai" placeholder="00" min="0" required>
+                                            <label for="thoigianthi" class="form-label">Thời gian làm bài</label>
+                                            <input type="number" class="form-control" id="thoigianthi"
+                                                name="thoigianthi" placeholder="00" min="0" required>
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -199,7 +201,7 @@ $userId = $_SESSION['user_id'];
                     </div>
 
                     <!-- Cấu hình -->
-                    <div class="col-lg-4">
+                    <!-- <div class="col-lg-4">
                         <div class="config-container">
                             <h5 class="card-title">Cấu hình</h5>
                             <form>
@@ -225,7 +227,7 @@ $userId = $_SESSION['user_id'];
                                 </div>
                             </form>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </main>
         </div>
@@ -300,7 +302,8 @@ $userId = $_SESSION['user_id'];
                         .catch(error => {
                             console.error('Error fetching chapters:', error);
                             alert(
-                            'Có lỗi xảy ra khi lấy danh sách chương.'); // Thông báo lỗi cho người dùng
+                                'Có lỗi xảy ra khi lấy danh sách chương.'
+                            ); // Thông báo lỗi cho người dùng
                         });
                 } else {
                     console.error('Mã môn học không hợp lệ');

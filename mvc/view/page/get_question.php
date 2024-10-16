@@ -1,9 +1,9 @@
 <?php
 // Kết nối đến cơ sở dữ liệu
-$servername = "localhost"; // Địa chỉ máy chủ cơ sở dữ liệu
-$username = "root"; // Tên người dùng
-$password = ""; // Mật khẩu
-$dbname = "WebThiTracNghiem"; // Tên cơ sở dữ liệu của bạn
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "WebThiTracNghiem";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -12,16 +12,17 @@ if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
 
-// Lấy mã câu hỏi từ yêu cầu GET
+// Nhận mã câu hỏi từ yêu cầu GET (hoặc POST)
 $macauhoi = isset($_GET['macauhoi']) ? intval($_GET['macauhoi']) : 0;
 
+// Kiểm tra nếu mã câu hỏi hợp lệ
 if ($macauhoi > 0) {
-    // Lấy thông tin câu hỏi
+    // Lấy câu hỏi theo mã câu hỏi
     $sqlQuestion = "SELECT * FROM cauhoi WHERE macauhoi = ?";
-    $stmt = $conn->prepare($sqlQuestion);
-    $stmt->bind_param("i", $macauhoi);
-    $stmt->execute();
-    $resultQuestion = $stmt->get_result();
+    $stmtQuestion = $conn->prepare($sqlQuestion);
+    $stmtQuestion->bind_param("i", $macauhoi);
+    $stmtQuestion->execute();
+    $resultQuestion = $stmtQuestion->get_result();
 
     if ($resultQuestion->num_rows > 0) {
         $questionData = $resultQuestion->fetch_assoc();
@@ -34,18 +35,22 @@ if ($macauhoi > 0) {
         $resultAnswers = $stmtAnswers->get_result();
 
         $answers = [];
-        while ($rowAnswer = $resultAnswers->fetch_assoc()) {
-            $answers[] = [
-                'noidungtl' => $rowAnswer['noidungtl'],
-                'ladapan' => $rowAnswer['ladapan']
-            ];
+        if ($resultAnswers->num_rows > 0) {
+            while ($rowAnswer = $resultAnswers->fetch_assoc()) {
+                $answers[] = [
+                    'noidungtl' => $rowAnswer['noidungtl'],
+                    'ladapan' => $rowAnswer['ladapan']
+                ];
+            }
+        } else {
+            $answers = ['error' => 'Không tìm thấy câu trả lời cho câu hỏi này.'];
         }
 
         // Chuẩn bị dữ liệu trả về
         $response = [
             'macauhoi' => $questionData['macauhoi'],
             'mamonhoc' => $questionData['mamonhoc'],
-            'chuong' => $questionData['chuong'],
+            'chuong' => $questionData['chuong'], // Sử dụng `machuong` thay vì `chuong`
             'noidung' => $questionData['noidung'],
             'dokho' => $questionData['dokho'],
             'cautraloi' => $answers
@@ -56,11 +61,11 @@ if ($macauhoi > 0) {
         echo json_encode($response);
     } else {
         // Nếu không tìm thấy câu hỏi
-        echo json_encode(['error' => 'Câu hỏi không tồn tại.']);
+        echo json_encode(['error' => 'Không tìm thấy câu hỏi với mã đã cho.']);
     }
 } else {
-    // Nếu mã câu hỏi không hợp lệ
-    echo json_encode(['error' => 'Mã câu hỏi không hợp lệ. Giá trị nhận được: ' . $_GET['macauhoi']]);
+    // Nếu không nhận được mã câu hỏi hoặc mã câu hỏi không hợp lệ
+    echo json_encode(['error' => 'Mã câu hỏi không hợp lệ.']);
 }
 
 // Đóng kết nối
