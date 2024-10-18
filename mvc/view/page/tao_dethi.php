@@ -129,7 +129,7 @@ $userId = $_SESSION['user_id'];
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Thông tin đề thi</h5>
-                                <form method="POST" action="create_exam.php">
+                                <form method="POST" action="create_exam.php" id="createExamForm">
                                     <!-- Thay đổi action tương ứng -->
                                     <div class="mb-3">
                                         <label for="tende" class="form-label">Tên đề kiểm tra</label>
@@ -191,48 +191,28 @@ $userId = $_SESSION['user_id'];
                                             </div>
                                         </div>
                                         <input type="hidden" id="mamonhoc" name="mamonhoc" value="">
-
                                     </div>
-
                                     <button type="submit" class="btn btn-primary">+ TẠO ĐỀ</button>
                                 </form>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Cấu hình -->
-                    <!-- <div class="col-lg-4">
-                        <div class="config-container">
-                            <h5 class="card-title">Cấu hình</h5>
-                            <form>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="autobank" name="autobank">
-                                    <label class="form-check-label" for="autobank">Tự động lấy từ ngân hàng đề</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="xemdiem" name="xemdiem">
-                                    <label class="form-check-label" for="xemdiem">Xem điểm sau khi thi xong</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="xembailam" name="xembailam">
-                                    <label class="form-check-label" for="xembailam">Xem bài làm khi thi xong</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="daocauhoi" name="daocauhoi">
-                                    <label class="form-check-label" for="daocauhoi">Đảo câu hỏi</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="daodapan" name="daodapan">
-                                    <label class="form-check-label" for="daodapan">Đảo đáp án</label>
-                                </div>
-                            </form>
-                        </div>
-                    </div> -->
                 </div>
             </main>
         </div>
     </div>
+
     <script>
+    document.getElementById('createExamForm').addEventListener('submit', function(e) {
+        var thoigianbatdau = document.getElementById('thoigianbatdau').value;
+        var current_time = new Date().toISOString().slice(0, 16); // Lấy thời gian hiện tại
+
+        if (thoigianbatdau < current_time) {
+            alert('Thời gian bắt đầu không được nhỏ hơn thời gian hiện tại.');
+            e.preventDefault(); // Ngăn không cho form được gửi
+        }
+    });
+
     document.getElementById('giaochonhom').addEventListener('change', function() {
         var manhom = this.value; // Lấy giá trị manhom đã chọn
 
@@ -325,8 +305,12 @@ $userId = $_SESSION['user_id'];
         // Lấy tất cả các checkbox đã chọn
         const checkboxes = document.querySelectorAll('#chuongContainer input[type="checkbox"]:checked');
 
-        // Nếu không có checkbox nào được chọn, thoát
-        if (checkboxes.length === 0) {
+        // Lấy giá trị của mamonhoc (có thể từ một input hidden hoặc select)
+        const mamonhoc = document.querySelector('input[name="mamonhoc"]')
+            .value; // Giả sử input hidden chứa mamonhoc
+
+        // Nếu không có checkbox nào được chọn hoặc không có mã môn học, thoát
+        if (checkboxes.length === 0 || !mamonhoc) {
             document.querySelector('input[name="socau_de"]').value = 0;
             document.querySelector('input[name="socau_tb"]').value = 0;
             document.querySelector('input[name="socau_kho"]').value = 0;
@@ -337,7 +321,8 @@ $userId = $_SESSION['user_id'];
         const promises = Array.from(checkboxes).map(checkbox => {
             var machuong = checkbox.value;
 
-            return fetch('get_question_count.php?machuong=' + machuong)
+            // Gửi cả machuong và mamonhoc
+            return fetch(`get_question_count.php?machuong=${machuong}&mamonhoc=${mamonhoc}`)
                 .then(response => response.json())
                 .then(data => {
                     // Cộng dồn số lượng câu hỏi theo độ khó

@@ -338,7 +338,7 @@ $result = $conn->query($sql);
 
                             // Tính toán thời gian cho phép vào thi (15 phút sau thời gian bắt đầu)
                             $allowEnterUntil = clone $startTime;
-                            $allowEnterUntil->modify('+1500000000000 minutes');
+                            $allowEnterUntil->modify('+15 minutes');
 
                             // Kiểm tra trạng thái đã thi
                             if ($resultCheck->num_rows > 0) {
