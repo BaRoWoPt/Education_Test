@@ -205,13 +205,20 @@ $userId = $_SESSION['user_id'];
     <script>
     document.getElementById('createExamForm').addEventListener('submit', function(e) {
         var thoigianbatdau = document.getElementById('thoigianbatdau').value;
-        var current_time = new Date().toISOString().slice(0, 16); // Lấy thời gian hiện tại
+        var current_time = new Date(); // Lấy thời gian hiện tại dưới dạng đối tượng Date
 
-        if (thoigianbatdau < current_time) {
+        // Chuyển đổi chuỗi thời gian nhập vào thành đối tượng Date
+        var datetime_start = new Date(thoigianbatdau.replace(" ",
+        "T")); // Thay thế khoảng trắng bằng 'T' để tạo định dạng ISO
+
+        // So sánh thời gian
+        if (datetime_start < current_time) {
             alert('Thời gian bắt đầu không được nhỏ hơn thời gian hiện tại.');
             e.preventDefault(); // Ngăn không cho form được gửi
         }
     });
+
+
 
     document.getElementById('giaochonhom').addEventListener('change', function() {
         var manhom = this.value; // Lấy giá trị manhom đã chọn
