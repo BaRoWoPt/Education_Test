@@ -31,6 +31,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Thời gian làm bài không hợp lệ.");
     }
 
+    // Lấy thời gian hiện tại
+    $current_time = date('Y-m-d H:i:s'); // Lấy thời gian hiện tại theo định dạng datetime
+    // Chuyển đổi cả hai biến thành đối tượng DateTime
+    $datetime_start = new DateTime($thoigianbatdau);
+    $datetime_current = new DateTime($current_time);
+
+    // So sánh thời gian
+    if ($datetime_start < $datetime_current) {
+        echo "<script>alert('Thời gian bắt đầu không được nhỏ hơn thời gian hiện tại.');</script>";
+        exit; // Ngừng thực thi nếu thời gian không hợp lệ
+    }
+
     // Thực hiện các bước lưu dữ liệu vào cơ sở dữ liệu
     $sql = "INSERT INTO dethi (tende, thoigianbatdau, thoigianthi, nguoitao, thoigianketthuc, socaude, socautb, socaukho, monthi)
             VALUES ('$tende', '$thoigianbatdau', '$thoigianthi', '$userId', 

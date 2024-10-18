@@ -5,19 +5,26 @@ $username = "root";
 $password = "";
 $dbname = "WebThiTracNghiem";
 
+// Kết nối với database
 $conn = new mysqli($servername, $username, $password, $dbname);
-
 if ($conn->connect_error) {
     die(json_encode(['error' => 'Kết nối thất bại: ' . $conn->connect_error]));
 }
 
-// Nhận tham số machuong từ GET và chuyển thành mảng
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Kiểm tra và nhận tham số mamonhoc từ GET
+$mamonhoc = isset($_GET['mamonhoc']) ? intval($_GET['mamonhoc']) : 0;
+
+// Kiểm tra và nhận tham số machuong từ GET
 $machuong = isset($_GET['machuong']) ? explode(',', $_GET['machuong']) : [];
 
-// Kiểm tra xem có chương nào được chọn không và loại bỏ các giá trị không hợp lệ
+// Lọc các giá trị không hợp lệ trong machuong
 $machuong = array_filter(array_map('intval', $machuong));
 
-if (empty($machuong)) {
+// Kiểm tra nếu thiếu tham số hoặc giá trị không hợp lệ
+if ($mamonhoc === 0 || empty($machuong)) {
     echo json_encode([
         'so_cau_de' => 0,
         'so_cau_tb' => 0,
@@ -26,14 +33,16 @@ if (empty($machuong)) {
     exit;
 }
 
-// Chuẩn bị câu truy vấn SQL với điều kiện IN để lọc theo nhiều chương
+// Tạo chuỗi dấu hỏi tương ứng với số lượng giá trị trong machuong
 $in  = str_repeat('?,', count($machuong) - 1) . '?';
+
+// Câu truy vấn SQL
 $sql = "SELECT 
             SUM(CASE WHEN dokho = '1' THEN 1 ELSE 0 END) AS so_cau_de,
             SUM(CASE WHEN dokho = '2' THEN 1 ELSE 0 END) AS so_cau_tb,
             SUM(CASE WHEN dokho = '3' THEN 1 ELSE 0 END) AS so_cau_kho
         FROM cauhoi 
-        WHERE machuong IN ($in)";
+        WHERE mamonhoc = ? AND machuong IN ($in)";
 
 // Chuẩn bị câu lệnh
 $stmt = $conn->prepare($sql);
@@ -41,17 +50,20 @@ if (!$stmt) {
     die(json_encode(['error' => 'Lỗi chuẩn bị câu lệnh: ' . $conn->error]));
 }
 
-// Ràng buộc các tham số với truy vấn
-$stmt->bind_param(str_repeat('i', count($machuong)), ...$machuong);
+// Gộp mamonhoc với các giá trị của machuong
+$params = array_merge([$mamonhoc], $machuong);
 
-// Thực thi truy vấn
+// Ràng buộc các tham số vào truy vấn
+$types = str_repeat('i', count($params)); // 'i' là kiểu số nguyên
+$stmt->bind_param($types, ...$params);
+
+// Thực thi câu lệnh
 if (!$stmt->execute()) {
     die(json_encode(['error' => 'Lỗi thực thi truy vấn: ' . $stmt->error]));
 }
 
+// Lấy kết quả
 $result = $stmt->get_result();
-
-// Lấy kết quả và tính tổng
 if ($row = $result->fetch_assoc()) {
     echo json_encode([
         'so_cau_de' => (int)$row['so_cau_de'],
