@@ -32,7 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Lấy thời gian hiện tại
+    $thoigianbatdau = $_POST['thoigianbatdau'];
     $current_time = date('Y-m-d H:i:s'); // Lấy thời gian hiện tại theo định dạng datetime
+
     // Chuyển đổi cả hai biến thành đối tượng DateTime
     $datetime_start = new DateTime($thoigianbatdau);
     $datetime_current = new DateTime($current_time);
