@@ -221,6 +221,7 @@ $printedMades = [];
         <div class="menu-section">
             <h3>Quản lý</h3>
             <a href="../page/student_dashboard.php">Tổng quan</a>
+            <a href="../page/update_in4_student.php">Quản lý thông tin</a>
             <a href="../page/dk_nhom.php">Đăng ký nhóm học phần</a>
             <a href="../page/Test_list.php">Kiểm tra</a>
             <a href="../page/result_list.php">Kết quả học tập</a>
@@ -260,6 +261,11 @@ $printedMades = [];
                         }
                         $printedMades[] = $made; // Lưu mã đề vào mảng
 
+                        // Truy vấn kiểm tra nếu manguoidung đã có trong ketqua với mã đề
+                        $checkQuery = "SELECT * FROM ketqua WHERE made = '$made' AND manguoidung = '$userId'";
+                        $checkResult = $conn->query($checkQuery);
+                        $isExamTaken = $checkResult->num_rows > 0;
+
                         echo "<tr>";
                         echo "<td>$made</td>";
                         echo "<td>$tende</td>";
@@ -272,9 +278,12 @@ $printedMades = [];
                         echo "<td>" . $currentTime->format('Y-m-d H:i:s') . " - " . $startTime->format('Y-m-d H:i:s') . "</td>";
 
                         $allowEnterUntil = clone $startTime;
-                        $allowEnterUntil->modify('+15 minutes');
+                        $allowEnterUntil->modify('+150 minutes');
 
-                        if ($currentTime >= $allowEnterUntil) {
+                        // Kiểm tra trạng thái đã thi hay chưa
+                        if ($isExamTaken) {
+                            echo "<td><button class='btn btn-secondary disabled'>ĐÃ THI</button></td>";
+                        } elseif ($currentTime >= $allowEnterUntil) {
                             echo "<td><button class='btn btn-secondary disabled'>Quá giờ</button></td>";
                         } elseif ($currentTime >= $startTime) {
                             echo "<td><form method='POST' action='start_exam.php'>

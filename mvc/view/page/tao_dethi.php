@@ -108,6 +108,7 @@ $userId = $_SESSION['user_id'];
                 <div class="menu-section">
                     <h3>Quản lý</h3>
                     <a href="../page/dashboard.php">Tổng quan</a>
+                    <a href="../page/update_user.php">Quản lý thông tin</a>
                     <a href="../page/classView.php">Nhóm học phần</a>
                     <a href="../page/question_view.php">Câu hỏi</a>
                     <a href="../page/learning.php">Môn học</a>
@@ -209,7 +210,7 @@ $userId = $_SESSION['user_id'];
 
         // Chuyển đổi chuỗi thời gian nhập vào thành đối tượng Date
         var datetime_start = new Date(thoigianbatdau.replace(" ",
-        "T")); // Thay thế khoảng trắng bằng 'T' để tạo định dạng ISO
+            "T")); // Thay thế khoảng trắng bằng 'T' để tạo định dạng ISO
 
         // So sánh thời gian
         if (datetime_start < current_time) {

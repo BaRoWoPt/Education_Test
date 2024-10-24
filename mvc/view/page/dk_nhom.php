@@ -75,136 +75,136 @@ $result = $conn->query($sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-    body {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        font-family: 'Roboto', sans-serif;
-        margin: 0;
-        padding: 0;
-    }
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
-    .sidebar {
-        height: 100vh;
-        width: 250px;
-        background-color: #a12c2f;
-        position: fixed;
-        top: 0;
-        left: 0;
-        color: white;
-        padding-top: 20px;
-    }
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            background-color: #a12c2f;
+            position: fixed;
+            top: 0;
+            left: 0;
+            color: white;
+            padding-top: 20px;
+        }
 
-    .sidebar h2 {
-        text-align: center;
-        font-weight: bold;
-        color: white;
-    }
+        .sidebar h2 {
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
 
-    .sidebar a {
-        display: block;
-        padding: 10px 20px;
-        color: white;
-        text-decoration: none;
-        font-size: 18px;
-    }
+        .sidebar a {
+            display: block;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
 
-    .sidebar a:hover {
-        background-color: #921e24;
-    }
+        .sidebar a:hover {
+            background-color: #921e24;
+        }
 
-    .menu-section {
-        margin-bottom: 20px;
-        margin-top: 60px;
-    }
+        .menu-section {
+            margin-bottom: 20px;
+            margin-top: 60px;
+        }
 
-    .menu-section h3 {
-        font-size: 16px;
-        text-transform: uppercase;
-        margin-left: 20px;
-        margin-bottom: 10px;
-        color: #FFD700;
-    }
+        .menu-section h3 {
+            font-size: 16px;
+            text-transform: uppercase;
+            margin-left: 20px;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
 
-    .content {
-        margin-left: 250px;
-        padding: 20px;
-    }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
 
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px;
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #ddd;
-    }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
 
-    .header h1 {
-        color: #a12c2f;
-        font-weight: bold;
-    }
+        .header h1 {
+            color: #a12c2f;
+            font-weight: bold;
+        }
 
-    .header .logout {
-        background-color: #a12c2f;
-        color: white;
-        padding: 10px 20px;
-        text-decoration: none;
-        border-radius: 5px;
-    }
+        .header .logout {
+            background-color: #a12c2f;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
 
-    .header .logout:hover {
-        background-color: #921e24;
-    }
+        .header .logout:hover {
+            background-color: #921e24;
+        }
 
-    .main-content {
-        margin-top: 20px;
-    }
+        .main-content {
+            margin-top: 20px;
+        }
 
-    footer {
-        text-align: center;
-        padding: 10px;
-        background-color: #f8f9fa;
-        color: #a12c2f;
-        position: fixed;
-        width: 100%;
-        bottom: 0;
-        left: 250px;
-    }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            color: #a12c2f;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 250px;
+        }
 
-    table {
-        width: 100%;
-        margin-top: 20px;
-        background-color: #fff;
-        border-collapse: collapse;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            background-color: #fff;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-    table th,
-    table td {
-        padding: 10px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
+        table th,
+        table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
 
-    table th {
-        background-color: #a12c2f;
-        color: white;
-    }
+        table th {
+            background-color: #a12c2f;
+            color: white;
+        }
 
-    table tr:hover {
-        background-color: #f1f1f1;
-    }
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
 
-    .btn-register {
-        background-color: #FFD700;
-        color: #a12c2f;
-        padding: 5px 10px;
-        text-decoration: none;
-        border-radius: 5px;
-    }
+        .btn-register {
+            background-color: #FFD700;
+            color: #a12c2f;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
 
-    .btn-register:hover {
-        background-color: #ffcc00;
-    }
+        .btn-register:hover {
+            background-color: #ffcc00;
+        }
     </style>
 </head>
 
@@ -215,6 +215,7 @@ $result = $conn->query($sql);
         <div class="menu-section">
             <h3>Quản lý</h3>
             <a href="../page/student_dashboard.php">Tổng quan</a>
+            <a href="../page/update_in4_student.php">Quản lý thông tin</a>
             <a href="../page/dk_nhom.php">Đăng ký nhóm học phần</a>
             <a href="../page/Test_list.php">Kiểm tra</a>
             <a href="../page/result_list.php">Kết quả học tập</a>
@@ -233,39 +234,39 @@ $result = $conn->query($sql);
         <div class="main-content">
             <h2>Danh sách các nhóm</h2>
             <?php if ($result->num_rows > 0): ?>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Mã nhóm</th>
-                        <th>Tên nhóm</th>
-                        <th>Sĩ số</th>
-                        <th>Ghi chú</th>
-                        <th>Năm học</th>
-                        <th>Học kỳ</th>
-                        <th>Giảng viên</th>
-                        <th>Đăng ký</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?php echo $row['manhom']; ?></td>
-                        <td><?php echo $row['tennhom']; ?></td>
-                        <td><?php echo $row['siso']; ?></td>
-                        <td><?php echo $row['ghichu']; ?></td>
-                        <td><?php echo $row['namhoc']; ?></td>
-                        <td><?php echo $row['hocky']; ?></td>
-                        <td><?php echo $row['giangvien']; ?></td>
-                        <td>
-                            <a class="btn-register" href="dk_nhom.php?manhom=<?php echo $row['manhom']; ?>">Đăng
-                                ký</a>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mã nhóm</th>
+                            <th>Tên nhóm</th>
+                            <th>Sĩ số</th>
+                            <th>Ghi chú</th>
+                            <th>Năm học</th>
+                            <th>Học kỳ</th>
+                            <th>Giảng viên</th>
+                            <th>Đăng ký</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $result->fetch_assoc()): ?>
+                            <tr>
+                                <td><?php echo $row['manhom']; ?></td>
+                                <td><?php echo $row['tennhom']; ?></td>
+                                <td><?php echo $row['siso']; ?></td>
+                                <td><?php echo $row['ghichu']; ?></td>
+                                <td><?php echo $row['namhoc']; ?></td>
+                                <td><?php echo $row['hocky']; ?></td>
+                                <td><?php echo $row['giangvien']; ?></td>
+                                <td>
+                                    <a class="btn-register" href="dk_nhom.php?manhom=<?php echo $row['manhom']; ?>">Đăng
+                                        ký</a>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
             <?php else: ?>
-            <p>Không có nhóm nào để hiển thị.</p>
+                <p>Không có nhóm nào để hiển thị.</p>
             <?php endif; ?>
         </div>
     </div>

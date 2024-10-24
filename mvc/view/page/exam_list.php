@@ -60,61 +60,61 @@ $conn->close();
     <title>Danh sách đề thi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-    body {
-        display: flex;
-    }
+        body {
+            display: flex;
+        }
 
-    .sidebar {
-        height: 100vh;
-        width: 250px;
-        background-color: #a12c2f;
-        position: fixed;
-        top: 0;
-        left: 0;
-        color: white;
-        padding-top: 20px;
-        transition: width 0.3s;
-    }
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            background-color: #a12c2f;
+            position: fixed;
+            top: 0;
+            left: 0;
+            color: white;
+            padding-top: 20px;
+            transition: width 0.3s;
+        }
 
-    .text_row {
-        font-size: 14px;
-    }
+        .text_row {
+            font-size: 14px;
+        }
 
-    .sidebar h2 {
-        text-align: center;
-        font-weight: bold;
-        color: white;
-    }
+        .sidebar h2 {
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
 
-    .sidebar a {
-        display: block;
-        padding: 10px 20px;
-        color: white;
-        text-decoration: none;
-        font-size: 18px;
-    }
+        .sidebar a {
+            display: block;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
 
-    .sidebar a:hover {
-        background-color: #921e24;
-    }
+        .sidebar a:hover {
+            background-color: #921e24;
+        }
 
-    .menu-section {
-        margin-bottom: 20px;
-        margin-top: 60px;
-    }
+        .menu-section {
+            margin-bottom: 20px;
+            margin-top: 60px;
+        }
 
-    .menu-section h3 {
-        font-size: 16px;
-        text-transform: uppercase;
-        margin-left: 20px;
-        margin-bottom: 10px;
-        color: #FFD700;
-    }
+        .menu-section h3 {
+            font-size: 16px;
+            text-transform: uppercase;
+            margin-left: 20px;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
 
-    .content {
-        margin-left: 250px;
-        padding: 20px;
-    }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
     </style>
 </head>
 
@@ -124,6 +124,7 @@ $conn->close();
         <div class="menu-section">
             <h3>Quản lý</h3>
             <a href="../page/dashboard.php">Tổng quan</a>
+            <a href="../page/update_user.php">Quản lý thông tin</a>
             <a href="../page/classView.php">Nhóm học phần</a>
             <a href="../page/question_view.php">Câu hỏi</a>
             <a href="../page/learning.php">Môn học</a>
@@ -149,34 +150,34 @@ $conn->close();
             </thead>
             <tbody>
                 <?php if (!empty($exams)): ?>
-                <?php foreach ($exams as $row): ?>
-                <tr>
-                    <td><?= $row['made'] ?></td>
-                    <td><?= $row['tende'] ?></td>
-                    <td><?= $row['thoigiantao'] ?></td>
-                    <td><?= $row['thoigianbatdau'] ?></td>
-                    <td><?= $row['thoigianketthuc'] ?></td>
-                    <td><?= $row['thoigianthi'] ?></td>
-                    <td><?= $row['trangthai'] == 1 ? 'Kích hoạt' : 'Không kích hoạt' ?></td>
-                    <td>
-                        <!-- Nút cập nhật hiển thị modal -->
-                        <button class='btn btn-warning btn-sm' data-bs-toggle="modal" data-bs-target="#updateExamModal"
-                            data-made="<?= $row['made'] ?>" data-tende="<?= $row['tende'] ?>"
-                            data-thoigianbatdau="<?= $row['thoigianbatdau'] ?>"
-                            data-thoigianthi="<?= $row['thoigianthi'] ?>" data-trangthai="<?= $row['trangthai'] ?>">
-                            Cập nhật
-                        </button>
-                        <!-- Nút xóa -->
-                        <a href='exam_list.php?delete_id=<?= $row['made'] ?>'
-                            onclick="return confirm('Bạn có chắc chắn muốn xóa đề thi này không?');"
-                            class='btn btn-danger btn-sm'>Xóa</a>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
+                    <?php foreach ($exams as $row): ?>
+                        <tr>
+                            <td><?= $row['made'] ?></td>
+                            <td><?= $row['tende'] ?></td>
+                            <td><?= $row['thoigiantao'] ?></td>
+                            <td><?= $row['thoigianbatdau'] ?></td>
+                            <td><?= $row['thoigianketthuc'] ?></td>
+                            <td><?= $row['thoigianthi'] ?></td>
+                            <td><?= $row['trangthai'] == 1 ? 'Kích hoạt' : 'Không kích hoạt' ?></td>
+                            <td>
+                                <!-- Nút cập nhật hiển thị modal -->
+                                <button class='btn btn-warning btn-sm' data-bs-toggle="modal" data-bs-target="#updateExamModal"
+                                    data-made="<?= $row['made'] ?>" data-tende="<?= $row['tende'] ?>"
+                                    data-thoigianbatdau="<?= $row['thoigianbatdau'] ?>"
+                                    data-thoigianthi="<?= $row['thoigianthi'] ?>" data-trangthai="<?= $row['trangthai'] ?>">
+                                    Cập nhật
+                                </button>
+                                <!-- Nút xóa -->
+                                <a href='exam_list.php?delete_id=<?= $row['made'] ?>'
+                                    onclick="return confirm('Bạn có chắc chắn muốn xóa đề thi này không?');"
+                                    class='btn btn-danger btn-sm'>Xóa</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 <?php else: ?>
-                <tr>
-                    <td colspan='8'>Không có đề thi nào.</td>
-                </tr>
+                    <tr>
+                        <td colspan='8'>Không có đề thi nào.</td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>
@@ -229,62 +230,62 @@ $conn->close();
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // Lắng nghe sự kiện khi modal mở để tự động điền thông tin
-    const updateExamModal = document.getElementById('updateExamModal');
-    updateExamModal.addEventListener('show.bs.modal', event => {
-        const button = event.relatedTarget; // Lấy nút đã nhấp
-        const made = button.getAttribute('data-made');
-        const tende = button.getAttribute('data-tende');
-        const thoigianbatdau = button.getAttribute('data-thoigianbatdau');
-        const thoigianthi = button.getAttribute('data-thoigianthi');
-        const trangthai = button.getAttribute('data-trangthai');
+        // Lắng nghe sự kiện khi modal mở để tự động điền thông tin
+        const updateExamModal = document.getElementById('updateExamModal');
+        updateExamModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget; // Lấy nút đã nhấp
+            const made = button.getAttribute('data-made');
+            const tende = button.getAttribute('data-tende');
+            const thoigianbatdau = button.getAttribute('data-thoigianbatdau');
+            const thoigianthi = button.getAttribute('data-thoigianthi');
+            const trangthai = button.getAttribute('data-trangthai');
 
-        // Cập nhật thông tin trong modal
-        const modalTitle = updateExamModal.querySelector('.modal-title');
-        const modalBodyInputMade = updateExamModal.querySelector('#update_made');
-        const modalBodyInputTende = updateExamModal.querySelector('#update_tende');
-        const modalBodyInputThoiGianBatDau = updateExamModal.querySelector('#update_thoigianbatdau');
-        const modalBodyInputThoiGianThi = updateExamModal.querySelector('#update_thoigianthi');
-        const modalBodyInputTrangThai = updateExamModal.querySelector('#update_trangthai');
+            // Cập nhật thông tin trong modal
+            const modalTitle = updateExamModal.querySelector('.modal-title');
+            const modalBodyInputMade = updateExamModal.querySelector('#update_made');
+            const modalBodyInputTende = updateExamModal.querySelector('#update_tende');
+            const modalBodyInputThoiGianBatDau = updateExamModal.querySelector('#update_thoigianbatdau');
+            const modalBodyInputThoiGianThi = updateExamModal.querySelector('#update_thoigianthi');
+            const modalBodyInputTrangThai = updateExamModal.querySelector('#update_trangthai');
 
-        modalTitle.textContent = 'Cập nhật đề thi: ' + tende;
-        modalBodyInputMade.value = made;
-        modalBodyInputTende.value = tende;
-        modalBodyInputThoiGianBatDau.value = thoigianbatdau;
-        modalBodyInputThoiGianThi.value = thoigianthi;
-        modalBodyInputTrangThai.value = trangthai;
+            modalTitle.textContent = 'Cập nhật đề thi: ' + tende;
+            modalBodyInputMade.value = made;
+            modalBodyInputTende.value = tende;
+            modalBodyInputThoiGianBatDau.value = thoigianbatdau;
+            modalBodyInputThoiGianThi.value = thoigianthi;
+            modalBodyInputTrangThai.value = trangthai;
 
-        // Tính toán thời gian kết thúc
-        calculateEndTime();
-    });
+            // Tính toán thời gian kết thúc
+            calculateEndTime();
+        });
 
-    function calculateEndTime() {
-        const startTimeInput = document.getElementById('update_thoigianbatdau');
-        const examDurationInput = document.getElementById('update_thoigianthi');
+        function calculateEndTime() {
+            const startTimeInput = document.getElementById('update_thoigianbatdau');
+            const examDurationInput = document.getElementById('update_thoigianthi');
 
-        if (startTimeInput.value && examDurationInput.value) {
-            const startTime = new Date(startTimeInput.value);
-            const examDuration = parseInt(examDurationInput.value, 10);
+            if (startTimeInput.value && examDurationInput.value) {
+                const startTime = new Date(startTimeInput.value);
+                const examDuration = parseInt(examDurationInput.value, 10);
 
-            if (!isNaN(examDuration) && examDuration >= 0) {
-                const endTime = new Date(startTime.getTime());
-                endTime.setMinutes(startTime.getMinutes() + examDuration);
+                if (!isNaN(examDuration) && examDuration >= 0) {
+                    const endTime = new Date(startTime.getTime());
+                    endTime.setMinutes(startTime.getMinutes() + examDuration);
 
-                const year = endTime.getFullYear();
-                const month = String(endTime.getMonth() + 1).padStart(2, '0');
-                const day = String(endTime.getDate()).padStart(2, '0');
-                const hours = String(endTime.getHours()).padStart(2, '0');
-                const minutes = String(endTime.getMinutes()).padStart(2, '0');
+                    const year = endTime.getFullYear();
+                    const month = String(endTime.getMonth() + 1).padStart(2, '0');
+                    const day = String(endTime.getDate()).padStart(2, '0');
+                    const hours = String(endTime.getHours()).padStart(2, '0');
+                    const minutes = String(endTime.getMinutes()).padStart(2, '0');
 
-                const formattedEndTime = `${year}-${month}-${day}T${hours}:${minutes}`;
-                document.getElementById('update_thoigianketthuc').value = formattedEndTime;
+                    const formattedEndTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+                    document.getElementById('update_thoigianketthuc').value = formattedEndTime;
+                }
             }
         }
-    }
 
-    // Lắng nghe sự kiện khi thay đổi thời gian bắt đầu và thời gian thi
-    document.getElementById('update_thoigianbatdau').addEventListener('input', calculateEndTime);
-    document.getElementById('update_thoigianthi').addEventListener('input', calculateEndTime);
+        // Lắng nghe sự kiện khi thay đổi thời gian bắt đầu và thời gian thi
+        document.getElementById('update_thoigianbatdau').addEventListener('input', calculateEndTime);
+        document.getElementById('update_thoigianthi').addEventListener('input', calculateEndTime);
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>

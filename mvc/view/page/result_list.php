@@ -29,100 +29,100 @@ $result = $stmt->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh Sách Kết Quả</title>
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 20px;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
 
-    .sidebar {
-        height: 100vh;
-        width: 250px;
-        background-color: #a12c2f;
-        position: fixed;
-        top: 0;
-        left: 0;
-        color: white;
-        padding-top: 20px;
-    }
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            background-color: #a12c2f;
+            position: fixed;
+            top: 0;
+            left: 0;
+            color: white;
+            padding-top: 20px;
+        }
 
-    .sidebar h2 {
-        text-align: center;
-        font-weight: bold;
-        color: white;
-    }
+        .sidebar h2 {
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
 
-    .sidebar a {
-        display: block;
-        padding: 10px 20px;
-        color: white;
-        text-decoration: none;
-        font-size: 18px;
-    }
+        .sidebar a {
+            display: block;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
 
-    .sidebar a:hover {
-        background-color: #921e24;
-    }
+        .sidebar a:hover {
+            background-color: #921e24;
+        }
 
-    .menu-section {
-        margin-bottom: 20px;
-        margin-top: 60px;
-    }
+        .menu-section {
+            margin-bottom: 20px;
+            margin-top: 60px;
+        }
 
-    .menu-section h3 {
-        font-size: 16px;
-        text-transform: uppercase;
-        margin-left: 20px;
-        margin-bottom: 10px;
-        color: #FFD700;
-    }
+        .menu-section h3 {
+            font-size: 16px;
+            text-transform: uppercase;
+            margin-left: 20px;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
 
-    .container {
-        align-items: center;
-        width: 100%;
-        margin-left: 280px;
-        max-width: 1000px;
-        padding: 20px;
-        box-sizing: border-box;
-    }
+        .container {
+            align-items: center;
+            width: 100%;
+            margin-left: 280px;
+            max-width: 1000px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
 
 
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
 
-    table,
-    th,
-    td {
-        border: 1px solid #ddd;
-    }
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
 
-    th,
-    td {
-        padding: 8px;
-        text-align: center;
-    }
+        th,
+        td {
+            padding: 8px;
+            text-align: center;
+        }
 
-    th {
-        background-color: #f44336;
-        color: white;
-    }
+        th {
+            background-color: #f44336;
+            color: white;
+        }
 
-    tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
 
-    tr:hover {
-        background-color: #ddd;
-    }
+        tr:hover {
+            background-color: #ddd;
+        }
 
-    .score {
-        font-weight: bold;
-    }
+        .score {
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -132,6 +132,7 @@ $result = $stmt->get_result();
         <div class="menu-section">
             <h3>Quản lý</h3>
             <a href="../page/student_dashboard.php">Tổng quan</a>
+            <a href="../page/update_in4_student.php">Quản lý thông tin</a>
             <a href="../page/dk_nhom.php">Đăng ký nhóm học phần</a>
             <a href="../page/Test_list.php">Kiểm tra</a>
             <a href="../page/result_list.php">Kết quả học tập</a>
