@@ -50,168 +50,168 @@ $printedMades = [];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-    body {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        font-family: 'Roboto', sans-serif;
-        margin: 0;
-        padding: 0;
-    }
-
-    .sidebar {
-        height: 100vh;
-        width: 250px;
-        background-color: #a12c2f;
-        position: fixed;
-        top: 0;
-        left: 0;
-        color: white;
-        padding-top: 20px;
-    }
-
-    .sidebar h2 {
-        text-align: center;
-        font-weight: bold;
-        color: white;
-    }
-
-    .sidebar a {
-        display: block;
-        padding: 10px 20px;
-        color: white;
-        text-decoration: none;
-        font-size: 18px;
-    }
-
-    .sidebar a:hover {
-        background-color: #921e24;
-    }
-
-    .menu-section {
-        margin-bottom: 20px;
-        margin-top: 60px;
-    }
-
-    .menu-section h3 {
-        font-size: 16px;
-        text-transform: uppercase;
-        margin-left: 20px;
-        margin-bottom: 10px;
-        color: #FFD700;
-    }
-
-    .container {
-        width: 100%;
-        margin-left: 250px;
-        max-width: 1200px;
-        padding: 20px;
-        box-sizing: border-box;
-    }
-
-    @media (max-width: 768px) {
-        .container {
-            padding: 10px;
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
         }
-    }
 
-    h1 {
-        color: #a12c2f;
-        margin-bottom: 20px;
-        text-align: center;
-    }
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            background-color: #a12c2f;
+            position: fixed;
+            top: 0;
+            left: 0;
+            color: white;
+            padding-top: 20px;
+        }
 
-    .table th {
-        background-color: #a12c2f;
-        color: white;
-    }
+        .sidebar h2 {
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
 
-    .table {
-        background-color: #ffffff;
-        border-radius: 10px;
-        overflow: hidden;
-    }
+        .sidebar a {
+            display: block;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
 
-    th {
-        background-color: #a12c2f;
-        color: white;
-    }
+        .sidebar a:hover {
+            background-color: #921e24;
+        }
 
-    .btn {
-        border-style: none;
-        padding: 10px 15px;
-        border-radius: 5px;
-        transition: background-color 0.3s, transform 0.2s;
-    }
+        .menu-section {
+            margin-bottom: 20px;
+            margin-top: 60px;
+        }
 
-    .btn-danger {
-        background-color: #dc3545;
-        /* Màu đỏ */
-        color: white;
-    }
+        .menu-section h3 {
+            font-size: 16px;
+            text-transform: uppercase;
+            margin-left: 20px;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
 
-    .btn-danger:hover {
-        background-color: #c82333;
-        /* Đậm hơn khi hover */
-        transform: translateY(-2px);
-        /* Hiệu ứng nổi khi hover */
-    }
+        .container {
+            width: 100%;
+            margin-left: 250px;
+            max-width: 1200px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
 
-    .btn-secondary {
-        background-color: #A04747;
-        /* Màu xám cho "Quá giờ" */
-        color: white;
-    }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+        }
 
-    .btn-secondary.disabled {
-        background-color: #C7253E;
-        /* Màu xám nhạt khi disabled */
-        pointer-events: none;
-    }
+        h1 {
+            color: #a12c2f;
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
-    .btn-secondary:hover:not(.disabled) {
-        background-color: #5a6268;
-        /* Đậm hơn khi hover */
-        transform: translateY(-2px);
-        /* Hiệu ứng nổi khi hover */
-    }
+        .table th {
+            background-color: #a12c2f;
+            color: white;
+        }
 
-    .btn-primary {
-        background-color: #15B392;
-        /* Màu vàng */
-        color: white;
-    }
+        .table {
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
-    .btn-primary:hover {
-        background-color: #73EC8B;
-        /* Đậm hơn khi hover */
-        transform: translateY(-2px);
-        /* Hiệu ứng nổi khi hover */
-    }
+        th {
+            background-color: #a12c2f;
+            color: white;
+        }
 
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px;
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #ddd;
-    }
+        .btn {
+            border-style: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
 
-    .header h1 {
-        color: #a12c2f;
-        font-weight: bold;
-    }
+        .btn-danger {
+            background-color: #dc3545;
+            /* Màu đỏ */
+            color: white;
+        }
 
-    .header .logout {
-        background-color: #a12c2f;
-        color: white;
-        padding: 10px 20px;
-        text-decoration: none;
-        border-radius: 5px;
-    }
+        .btn-danger:hover {
+            background-color: #c82333;
+            /* Đậm hơn khi hover */
+            transform: translateY(-2px);
+            /* Hiệu ứng nổi khi hover */
+        }
 
-    .header .logout:hover {
-        background-color: #921e24;
-    }
+        .btn-secondary {
+            background-color: #A04747;
+            /* Màu xám cho "Quá giờ" */
+            color: white;
+        }
+
+        .btn-secondary.disabled {
+            background-color: #C7253E;
+            /* Màu xám nhạt khi disabled */
+            pointer-events: none;
+        }
+
+        .btn-secondary:hover:not(.disabled) {
+            background-color: #5a6268;
+            /* Đậm hơn khi hover */
+            transform: translateY(-2px);
+            /* Hiệu ứng nổi khi hover */
+        }
+
+        .btn-primary {
+            background-color: #15B392;
+            /* Màu vàng */
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #73EC8B;
+            /* Đậm hơn khi hover */
+            transform: translateY(-2px);
+            /* Hiệu ứng nổi khi hover */
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header h1 {
+            color: #a12c2f;
+            font-weight: bold;
+        }
+
+        .header .logout {
+            background-color: #a12c2f;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .header .logout:hover {
+            background-color: #921e24;
+        }
     </style>
 </head>
 
@@ -261,6 +261,11 @@ $printedMades = [];
                         }
                         $printedMades[] = $made; // Lưu mã đề vào mảng
 
+                        // Truy vấn kiểm tra nếu manguoidung đã có trong ketqua với mã đề
+                        $checkQuery = "SELECT * FROM ketqua WHERE made = '$made' AND manguoidung = '$userId'";
+                        $checkResult = $conn->query($checkQuery);
+                        $isExamTaken = $checkResult->num_rows > 0;
+
                         echo "<tr>";
                         echo "<td>$made</td>";
                         echo "<td>$tende</td>";
@@ -273,9 +278,12 @@ $printedMades = [];
                         echo "<td>" . $currentTime->format('Y-m-d H:i:s') . " - " . $startTime->format('Y-m-d H:i:s') . "</td>";
 
                         $allowEnterUntil = clone $startTime;
-                        $allowEnterUntil->modify('+15 minutes');
+                        $allowEnterUntil->modify('+150 minutes');
 
-                        if ($currentTime >= $allowEnterUntil) {
+                        // Kiểm tra trạng thái đã thi hay chưa
+                        if ($isExamTaken) {
+                            echo "<td><button class='btn btn-secondary disabled'>ĐÃ THI</button></td>";
+                        } elseif ($currentTime >= $allowEnterUntil) {
                             echo "<td><button class='btn btn-secondary disabled'>Quá giờ</button></td>";
                         } elseif ($currentTime >= $startTime) {
                             echo "<td><form method='POST' action='start_exam.php'>

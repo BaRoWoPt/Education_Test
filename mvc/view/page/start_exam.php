@@ -58,62 +58,62 @@ $thoigianthi = $examInfo['thoigianthi']; // Thời gian làm bài
     <link rel="icon" href="/mvc/view/img/68e129217733aa0645b48e7c154d2303-_1_.svg" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #f0f0f0;
-        }
+    body {
+        background-color: #f0f0f0;
+    }
 
-        .container {
-            margin-top: 30px;
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
+    .container {
+        margin-top: 30px;
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            background-color: #007bff;
-            color: white;
-            border-radius: 5px;
-        }
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+    }
 
-        header h2 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
+    header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
 
-        .timer {
-            font-size: 1.25rem;
-        }
+    .timer {
+        font-size: 1.25rem;
+    }
 
-        .question-card {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            transition: background-color 0.3s;
-        }
+    .question-card {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        transition: background-color 0.3s;
+    }
 
-        .question-card.selected {
-            background-color: #d1e7dd;
-        }
+    .question-card.selected {
+        background-color: #d1e7dd;
+    }
 
-        .btn-submit {
-            background-color: #007bff;
-            border: none;
-            color: white;
-            width: 100%;
-            padding: 10px;
-            font-size: 1.25rem;
-        }
+    .btn-submit {
+        background-color: #007bff;
+        border: none;
+        color: white;
+        width: 100%;
+        padding: 10px;
+        font-size: 1.25rem;
+    }
 
-        .btn-submit:hover {
-            background-color: #0056b3;
-        }
+    .btn-submit:hover {
+        background-color: #0056b3;
+    }
     </style>
 </head>
 
@@ -204,50 +204,48 @@ $thoigianthi = $examInfo['thoigianthi']; // Thời gian làm bài
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Thực hiện tự động nộp bài khi người dùng chuyển tab
-        document.addEventListener("visibilitychange", function() {
-            if (document.visibilityState === 'hidden') {
-                alert("Bạn đã chuyển tab. Bài thi sẽ tự động nộp.");
-                document.querySelector('form').submit(); // Tự động nộp bài
-            }
-        });
-
-        // Cảnh báo khi người dùng cố gắng rời khỏi trang
-        window.onbeforeunload = function(e) {
-            const confirmationMessage = "Bạn có chắc muốn rời khỏi trang? Nếu rời, bài thi sẽ được nộp.";
-            // Tự động nộp bài nếu rời khỏi trang
+    // Thực hiện tự động nộp bài khi người dùng chuyển tab
+    document.addEventListener("visibilitychange", function() {
+        if (document.visibilityState === 'hidden') {
+            alert("Bạn đã chuyển tab. Bài thi sẽ tự động nộp.");
             document.querySelector('form').submit(); // Tự động nộp bài
-            e.returnValue = confirmationMessage; // Hiển thị cảnh báo
-            return confirmationMessage; // Một số trình duyệt vẫn yêu cầu trả về giá trị này
-        };
-
-        // Hàm cập nhật màu sắc cho câu hỏi đã chọn đáp án
-        function updateSelectedAnswers(questionId) {
-            const questionCard = document.getElementById(`question-${questionId}`);
-            questionCard.classList.toggle('selected');
         }
+    });
 
-        // Đếm ngược thời gian làm bài
-        let timeRemaining = <?= $thoigianthi * 60 ?>; // Thời gian còn lại tính bằng giây
-        const countdownElement = document.getElementById("countdown");
+    // Cảnh báo khi người dùng cố gắng rời khỏi trang
+    window.onbeforeunload = function(e) {
+        const confirmationMessage = "Bạn có chắc muốn rời khỏi trang? Nếu rời, bài thi sẽ được nộp.";
+        // Tự động nộp bài nếu rời khỏi trang
+        document.querySelector('form').submit(); // Tự động nộp bài
+        e.returnValue = confirmationMessage; // Hiển thị cảnh báo
+        return confirmationMessage; // Một số trình duyệt vẫn yêu cầu trả về giá trị này
+    };
 
-        function updateTimer() {
-            const hours = Math.floor(timeRemaining / 3600);
-            const minutes = Math.floor((timeRemaining % 3600) / 60);
-            const seconds = timeRemaining % 60;
+    // Hàm đếm ngược
+    let timeLeft = <?= $thoigianthi * 60 ?>; // Chuyển đổi thời gian làm bài thành giây
+    const countdownElement = document.getElementById("countdown");
 
-            countdownElement.innerHTML =
+    function updateTimer() {
+        if (timeLeft <= 0) {
+            alert("Thời gian làm bài đã hết!");
+            document.querySelector('form').submit(); // Tự động nộp bài khi hết thời gian
+        } else {
+            const hours = Math.floor(timeLeft / 3600);
+            const minutes = Math.floor((timeLeft % 3600) / 60);
+            const seconds = timeLeft % 60;
+            countdownElement.textContent =
                 `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
-            if (timeRemaining > 0) {
-                timeRemaining--;
-            } else {
-                alert("Hết thời gian làm bài. Bài thi sẽ tự động nộp.");
-                document.querySelector('form').submit(); // Tự động nộp bài
-            }
+            timeLeft--;
         }
+    }
 
-        setInterval(updateTimer, 1000); // Cập nhật đồng hồ mỗi giây
+    setInterval(updateTimer, 1000); // Cập nhật đồng hồ mỗi giây
+
+    // Cập nhật trạng thái câu hỏi đã chọn
+    function updateSelectedAnswers(questionId) {
+        const questionElement = document.getElementById(`question-${questionId}`);
+        questionElement.classList.toggle('selected');
+    }
     </script>
 </body>
 

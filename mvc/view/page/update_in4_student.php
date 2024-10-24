@@ -187,13 +187,11 @@ $stmt->close();
         <h2><span style="color:#821131;">HUFLIT</span> <span style="color:#FFD700">TEST</span></h2>
         <div class="menu-section">
             <h3>Quản lý</h3>
-            <a href="../page/dashboard.php">Tổng quan</a>
-            <a href="../page/update_user.php">Quản lý thông tin</a>
-            <a href="../page/classView.php">Nhóm học phần</a>
-            <a href="../page/question_view.php">Câu hỏi</a>
-            <a href="../page/learning.php">Môn học</a>
-            <a href="../page/tao_dethi.php">Tạo đề kiểm tra</a>
-            <a href="../page/exam_list.php">Bộ đề</a>
+            <a href="../page/student_dashboard.php">Tổng quan</a>
+            <a href="../page/update_in4_student.php">Quản lý thông tin</a>
+            <a href="../page/dk_nhom.php">Đăng ký nhóm học phần</a>
+            <a href="../page/Test_list.php">Kiểm tra</a>
+            <a href="../page/result_list.php">Kết quả học tập</a>
         </div>
     </div>
     <div class="container">
