@@ -160,6 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="menu-section">
             <h3>Quản lý</h3>
             <a href="../page/student_dashboard.php">Tổng quan</a>
+            <a href="../page/update_in4_student.php">Quản lý thông tin</a>
             <a href="../page/dk_nhom.php">Đăng ký nhóm học phần</a>
             <a href="../page/Test_list.php">Kiểm tra</a>
             <a href="../page/result_list.php">Kết quả học tập</a>

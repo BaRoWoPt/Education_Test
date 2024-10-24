@@ -50,168 +50,168 @@ $printedMades = [];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+    body {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
 
-        .sidebar {
-            height: 100vh;
-            width: 250px;
-            background-color: #a12c2f;
-            position: fixed;
-            top: 0;
-            left: 0;
-            color: white;
-            padding-top: 20px;
-        }
+    .sidebar {
+        height: 100vh;
+        width: 250px;
+        background-color: #a12c2f;
+        position: fixed;
+        top: 0;
+        left: 0;
+        color: white;
+        padding-top: 20px;
+    }
 
-        .sidebar h2 {
-            text-align: center;
-            font-weight: bold;
-            color: white;
-        }
+    .sidebar h2 {
+        text-align: center;
+        font-weight: bold;
+        color: white;
+    }
 
-        .sidebar a {
-            display: block;
-            padding: 10px 20px;
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-        }
+    .sidebar a {
+        display: block;
+        padding: 10px 20px;
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+    }
 
-        .sidebar a:hover {
-            background-color: #921e24;
-        }
+    .sidebar a:hover {
+        background-color: #921e24;
+    }
 
-        .menu-section {
-            margin-bottom: 20px;
-            margin-top: 60px;
-        }
+    .menu-section {
+        margin-bottom: 20px;
+        margin-top: 60px;
+    }
 
-        .menu-section h3 {
-            font-size: 16px;
-            text-transform: uppercase;
-            margin-left: 20px;
-            margin-bottom: 10px;
-            color: #FFD700;
-        }
+    .menu-section h3 {
+        font-size: 16px;
+        text-transform: uppercase;
+        margin-left: 20px;
+        margin-bottom: 10px;
+        color: #FFD700;
+    }
 
+    .container {
+        width: 100%;
+        margin-left: 250px;
+        max-width: 1200px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    @media (max-width: 768px) {
         .container {
-            width: 100%;
-            margin-left: 250px;
-            max-width: 1200px;
-            padding: 20px;
-            box-sizing: border-box;
+            padding: 10px;
         }
+    }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-        }
+    h1 {
+        color: #a12c2f;
+        margin-bottom: 20px;
+        text-align: center;
+    }
 
-        h1 {
-            color: #a12c2f;
-            margin-bottom: 20px;
-            text-align: center;
-        }
+    .table th {
+        background-color: #a12c2f;
+        color: white;
+    }
 
-        .table th {
-            background-color: #a12c2f;
-            color: white;
-        }
+    .table {
+        background-color: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+    }
 
-        .table {
-            background-color: #ffffff;
-            border-radius: 10px;
-            overflow: hidden;
-        }
+    th {
+        background-color: #a12c2f;
+        color: white;
+    }
 
-        th {
-            background-color: #a12c2f;
-            color: white;
-        }
+    .btn {
+        border-style: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.2s;
+    }
 
-        .btn {
-            border-style: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            transition: background-color 0.3s, transform 0.2s;
-        }
+    .btn-danger {
+        background-color: #dc3545;
+        /* Màu đỏ */
+        color: white;
+    }
 
-        .btn-danger {
-            background-color: #dc3545;
-            /* Màu đỏ */
-            color: white;
-        }
+    .btn-danger:hover {
+        background-color: #c82333;
+        /* Đậm hơn khi hover */
+        transform: translateY(-2px);
+        /* Hiệu ứng nổi khi hover */
+    }
 
-        .btn-danger:hover {
-            background-color: #c82333;
-            /* Đậm hơn khi hover */
-            transform: translateY(-2px);
-            /* Hiệu ứng nổi khi hover */
-        }
+    .btn-secondary {
+        background-color: #A04747;
+        /* Màu xám cho "Quá giờ" */
+        color: white;
+    }
 
-        .btn-secondary {
-            background-color: #A04747;
-            /* Màu xám cho "Quá giờ" */
-            color: white;
-        }
+    .btn-secondary.disabled {
+        background-color: #C7253E;
+        /* Màu xám nhạt khi disabled */
+        pointer-events: none;
+    }
 
-        .btn-secondary.disabled {
-            background-color: #C7253E;
-            /* Màu xám nhạt khi disabled */
-            pointer-events: none;
-        }
+    .btn-secondary:hover:not(.disabled) {
+        background-color: #5a6268;
+        /* Đậm hơn khi hover */
+        transform: translateY(-2px);
+        /* Hiệu ứng nổi khi hover */
+    }
 
-        .btn-secondary:hover:not(.disabled) {
-            background-color: #5a6268;
-            /* Đậm hơn khi hover */
-            transform: translateY(-2px);
-            /* Hiệu ứng nổi khi hover */
-        }
+    .btn-primary {
+        background-color: #15B392;
+        /* Màu vàng */
+        color: white;
+    }
 
-        .btn-primary {
-            background-color: #15B392;
-            /* Màu vàng */
-            color: white;
-        }
+    .btn-primary:hover {
+        background-color: #73EC8B;
+        /* Đậm hơn khi hover */
+        transform: translateY(-2px);
+        /* Hiệu ứng nổi khi hover */
+    }
 
-        .btn-primary:hover {
-            background-color: #73EC8B;
-            /* Đậm hơn khi hover */
-            transform: translateY(-2px);
-            /* Hiệu ứng nổi khi hover */
-        }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #ddd;
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #ddd;
-        }
+    .header h1 {
+        color: #a12c2f;
+        font-weight: bold;
+    }
 
-        .header h1 {
-            color: #a12c2f;
-            font-weight: bold;
-        }
+    .header .logout {
+        background-color: #a12c2f;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+    }
 
-        .header .logout {
-            background-color: #a12c2f;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        .header .logout:hover {
-            background-color: #921e24;
-        }
+    .header .logout:hover {
+        background-color: #921e24;
+    }
     </style>
 </head>
 
@@ -221,6 +221,7 @@ $printedMades = [];
         <div class="menu-section">
             <h3>Quản lý</h3>
             <a href="../page/student_dashboard.php">Tổng quan</a>
+            <a href="../page/update_in4_student.php">Quản lý thông tin</a>
             <a href="../page/dk_nhom.php">Đăng ký nhóm học phần</a>
             <a href="../page/Test_list.php">Kiểm tra</a>
             <a href="../page/result_list.php">Kết quả học tập</a>

@@ -163,14 +163,16 @@ $userId = $_SESSION['user_id'];
         <div class="menu-section">
             <h3>Quản lý</h3>
             <a href="../page/dashboard.php">Tổng quan</a>
+            <a href="../page/update_user.php">Quản lý thông tin</a>
             <a href="../page/classView.php">Nhóm học phần</a>
             <a href="../page/question_view.php">Câu hỏi</a>
             <a href="../page/learning.php">Môn học</a>
             <a href="../page/tao_dethi.php">Tạo đề kiểm tra</a>
             <a href="../page/exam_list.php">Bộ đề</a>
         </div>
+    </div>
 
-        <!-- <div class="menu-section">
+    <!-- <div class="menu-section">
             <h3>Quản trị</h3>
             <a href="#">Nhóm quyền</a>
         </div> -->
